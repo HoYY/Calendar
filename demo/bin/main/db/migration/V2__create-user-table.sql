@@ -1,0 +1,11 @@
+--
+-- V2: Create USER TABLE
+--
+--
+CREATE TABLE Users (
+  user_id INT NOT NULL AUTO_INCREMENT,
+  email VARCHAR(80) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  PRIMARY KEY (user_id),
+  UNIQUE INDEX (email)
+) DEFAULT CHARSET=utf8;
