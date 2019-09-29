@@ -28,7 +28,24 @@ public class Schedule {
 	@Column(length=15000)
 	private String contents;
 	
+	@NotNull
 	private String start_date;
+	
+	@NotNull
 	private String end_date;
 	
+	@NotNull
+	@Column(length=3)
+	private int term;
+	
+	
+	public Schedule() {}
+	public Schedule(String email, String title, String contents, String start_date, String end_date, int term) {
+		this.email = email;
+		this.title = title;
+		this.contents = contents;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.term = term;
+	}
 }

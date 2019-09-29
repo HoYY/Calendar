@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 	<style>
 		#datetimepicker2 {
     		z-index: 3500 !important;
@@ -68,6 +69,20 @@
 	        </div><div class="content-line"><i class="material-icons">
 	notes
 	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 2
+	                        </div>
+	                        <div class="event-consecutive event-start event-end" data-span="6"
+	                             data-toggle="popover"
+	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
+	        </div><div class="content-line"><i class="material-icons">
+	notes
+	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
+	                        </div>
+	                        <div class="event-consecutive event-start event-end" data-span="6"
+	                             data-toggle="popover"
+	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
+	        </div><div class="content-line"><i class="material-icons">
+	notes
+	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
 	                        </div>
 	                    </div>
 	                    <div class="day">
@@ -273,8 +288,8 @@
 	                    <span aria-hidden="true">&times;</span>
 	                </button>
 	            </div>
+	            <form method="post" action="/schedules">
 	            <div class="modal-body">
-	                <form method="post" action="/schedules">
 	                    <div class="form-group">
 	                        <label class="col-form-label">일정 제목</label>
 	                        <input type="text" name="title" class="form-control" id="recipient-name">
@@ -289,9 +304,9 @@
 	                                <label class="col-form-label">일정 시작 날짜</label>
 	                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
 	                                    <input type="text" name="startDate" class="form-control datetimepicker-input"
-	                                           data-target="#datetimepicker"/>
+	                                           data-target="#datetimepicker1"/>
 	                                    <div class="input-group-append" data-target="#datetimepicker1"
-	                                         data-toggle="datetimepicker1">
+	                                         data-toggle="datetimepicker">
 	                                        <div class="input-group-text" ><i class="material-icons">
 	                                            calendar_today
 	                                        </i></div>
@@ -303,7 +318,7 @@
 	                            <div class="form-group">
 	                                <label class="col-form-label">일정 시작 시간</label>
 	                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-	                                    <input type="text" id="datetimepicker2" name="startTime" class="form-control datetimepicker-input"
+	                                    <input type="text" name="startTime" class="form-control datetimepicker-input"
 	                                           data-target="#datetimepicker2"/>
 	                                    <div class="input-group-append" data-target="#datetimepicker2"
 	                                         data-toggle="datetimepicker">
@@ -355,12 +370,12 @@
 	                            <label class="form-check-label" for="inlineCheckbox2">하루 종일</label>
 	                        </div>
 	                    </div>
-	                </form>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-	                <button type="button" class="btn btn-primary">일정 만들기</button>
+	                <button type="submit" class="btn btn-primary">일정 만들기</button>
 	            </div>
+	            </form>
 	        </div>
 	    </div>
 	</div>
@@ -372,8 +387,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment-with-locales.min.js" integrity="sha256-rFEvCvgZWluLPnjiBNa/p3nJLJxTP1XYw4W6FZz2S98=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/locale/ko.js" integrity="sha256-52Xn0wi4kPGcROqCAA5EoontBDks09MLjv7fd5WAj3U=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
 	<script src="/javascript/calendar.js"></script>
 	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		var message = /*[[${message}]]*/ 'default';
+		switch(message) {
+			case "empty":
+				alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
+				break;
+			case "lateThanEnd":
+				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
+				break;
+		}
+	/*]]>*/	
+	</script>
 </body>
 </html>
 	

@@ -2,16 +2,11 @@
 <head>
 	<title>Calendar Project</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<link rel="stylesheet" href="/stylesheets/calendar.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-	<style>
-		#datetimepicker2 {
-    		z-index: 3500 !important;
-		}
-	</style>
+	<link rel="stylesheet" href="/stylesheets/calendar.css">
 </head>
 <body>
 	<div class="calendar-container">
@@ -57,34 +52,22 @@
 	                <div class="week">
 	                    <div class="day">
 	                        <h3 class="day-label">1</h3>
-	                        <div class="event-consecutive event-start event-end" data-span="6"
-	                             data-toggle="popover"
-	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
+	                        <div class="event-consecutive event-start event-end" th:each="schedule : ${schedules}" th:if="${schedule.startDate != schedule.endDate}" th:data-span="${schedule.term}" 
+		                       	th:text="${#strings.length(schedule.title) > schedule.term*5 ? #strings.substring(schedule.title, 0, (schedule.term*5 > 35 ? 35 : schedule.term*5))+'...' : schedule.title}"
+		                        data-toggle="popover" data-html="true" th:data-content="${schedule.data_content}">
+							</div>
+							<div class="event event-start event-end" th:each="scheduleOne : ${oneDaySchedules}" th:data-span="1" 
+		                      	th:text="${#strings.length(scheduleOne.title) > 5 ? #strings.substring(scheduleOne.title, 0, 5)+'...' : scheduleOne.title}"
+		                        data-toggle="popover" data-html="true" th:data-content="${scheduleOne.data_content}">
+							</div>
+							</span>
+							<div class="event event-start event-end" data-span="1" data-toggle="popover"
+	                             data-html="true" data-content='<div class="content-line"><div class="event-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일<span class="reservation-time">⋅오후 2:00~ 3:00</span></div>
 	        </div><div class="content-line"><i class="material-icons">
 	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
+	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>일반 일정 1
 	                        </div>
-	                        <div class="event-consecutive event-start event-end" data-span="5" data-toggle="popover"
-	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 2
-	                        </div>
-	                        <div class="event-consecutive event-start event-end" data-span="6"
-	                             data-toggle="popover"
-	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
-	                        </div>
-	                        <div class="event-consecutive event-start event-end" data-span="6"
-	                             data-toggle="popover"
-	                             data-html="true" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
-	                        </div>
-	                    </div>
+						</div>
 	                    <div class="day">
 	                        <h3 class="day-label">2</h3>
 	                        <div class="event event-start event-end" data-span="1" data-toggle="popover"
