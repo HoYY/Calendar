@@ -55,5 +55,16 @@ public class ScheduleService {
 		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByYearMonth(util.getStartDateOfMonth(year, month)
 				, util.getEndDateOfMonth(year, month)));
 	}
+	
+	public void deleteById(int id) {
+		try {
+			scheduleRepository.deleteById(id);
+			log.info("Delete Schedule Success. Id : "+ id);
+		}
+		catch(Exception e) {
+			log.error("ScheduleService.deleteById error!!");
+			log.error(e);
+		}
+	}
 
 }

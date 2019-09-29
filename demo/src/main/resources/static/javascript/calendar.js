@@ -35,3 +35,31 @@ $(function () {
         format: 'LT'
     });
 });
+
+$(function () {
+	function deleteSchedule(id) {
+		var form = createForm("/schedules/"+id, "post");
+		var inputMethod = createInput("_method", "delete");
+		var inputScheduleId = createInput("id", id);
+		form.appendChild(inputMethod);
+		form.appendChild(inputScheduleId);
+		document.body.appendChild(form);
+		form.submit();
+	}
+	window.deleteSchedule = deleteSchedule;
+});
+
+function createForm(path, method) {
+	var form = document.createElement("form");
+	form.action = path;
+	form.method = method;
+	return form;
+}
+
+function createInput(name, value) {
+	var input = document.createElement("input");
+	input.name = name;
+	input.value = value;
+	input.type = "hidden";
+	return input;
+}
