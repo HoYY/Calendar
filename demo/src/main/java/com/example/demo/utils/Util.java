@@ -1,12 +1,8 @@
 package com.example.demo.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 import org.springframework.stereotype.Component;
-
-import com.example.demo.DTO.ScheduleDto;
-import com.example.demo.models.Schedule;
 
 @Component
 public class Util {
@@ -18,48 +14,41 @@ public class Util {
 		else return false;
 	}
 	
-	public List<ScheduleDto> toScheduleDtos(List<Schedule> schedules) {
-		if(schedules == null)
-			return null;
+	public String getStartDateOfMonth(int year, int month) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.WEEK_OF_MONTH, 1);
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		int startYear = calendar.get(Calendar.YEAR);
+		int startMonth = calendar.get(Calendar.MONTH) + 1;
+		int startDay = calendar.get(Calendar.DAY_OF_MONTH);
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.valueOf(startYear));
+		sb.append(".");
+		sb.append(String.valueOf(startMonth));
+		sb.append(".");
+		sb.append(String.valueOf(startDay));
 		
-		List<ScheduleDto> scheduleDtos = new ArrayList<>();
-		for(Schedule schedule : schedules) {
-			scheduleDtos.add(toScheduleDto(schedule));
-		}
-		
-		return scheduleDtos;
+		return sb.toString();
 	}
 	
-	public ScheduleDto toScheduleDto(Schedule schedule) {
-		if(schedule == null)
-			return null;
-		String start = schedule.getStart_date();
-		String end = schedule.getEnd_date();
-		String title = schedule.getTitle();
-		String startDate = start.substring(0, 10);
-		String startTime = start.substring(10, start.length());
-		String endDate = end.substring(0, 10);
-		String endTime = end.substring(10, end.length());
+	public String getEndDateOfMonth(int year, int month) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.WEEK_OF_MONTH, calendar.getMaximum(Calendar.WEEK_OF_MONTH));
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		int endYear = calendar.get(Calendar.YEAR);
+		int endMonth = calendar.get(Calendar.MONTH) + 1;
+		int endDay = calendar.get(Calendar.DAY_OF_MONTH);
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.valueOf(endYear));
+		sb.append(".");
+		sb.append(String.valueOf(endMonth));
+		sb.append(".");
+		sb.append(String.valueOf(endDay));
 		
-		ScheduleDto scheduleDto = new ScheduleDto();
-		scheduleDto.setEmail(schedule.getEmail());
-		scheduleDto.setTitle(title);
-		scheduleDto.setContents(schedule.getContents());
-		scheduleDto.setStartDate(startDate);
-		scheduleDto.setStartTime(startTime);
-		scheduleDto.setEndDate(endDate);
-		scheduleDto.setEndTime(endTime);
-		scheduleDto.setTerm(schedule.getTerm());
-
-		String data_content = "<div class='content-line'><div class='event-consecutive-marking'></div><div class='title'><h5>"
-				+ (title.length() > 4 ? title.substring(0,4)+".." : title)+"</h5>"
-				+ "<h7 class='reservation'>"+ scheduleDto.getStartDate() +" "+ scheduleDto.getStartTime() +"<br/>"
-				+ "~ "+ scheduleDto.getEndDate() +" "+ scheduleDto.getEndTime()+"</div></div>"
-				+ "<div class='content-line'><i class='material-icons'>notes</i><div class='title'>"
-				+ "<h7 class='reservation'>"+ schedule.getContents() +"</div>";
-
-		scheduleDto.setData_content(data_content);
-		
-		return scheduleDto;
+		return sb.toString();
 	}
 }

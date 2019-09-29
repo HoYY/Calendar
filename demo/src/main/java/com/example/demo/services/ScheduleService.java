@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.models.Schedule;
 import com.example.demo.repositories.ScheduleRepository;
+import com.example.demo.utils.ScheduleUtil;
 import com.example.demo.utils.Util;
 
 @Service
 public class ScheduleService {
 	@Autowired
 	private ScheduleRepository scheduleRepository;
+	
+	@Autowired
+	private ScheduleUtil scheduleUtil;
 	
 	@Autowired
 	private Util util;
@@ -42,18 +46,14 @@ public class ScheduleService {
 		}
 	}
 	
-	public List<ScheduleDto> getSchedulesByYearMonth() {
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-		String nowYearMonth = dateFormat.format(date);
-		return util.toScheduleDtos(scheduleRepository.findByYearMonth(nowYearMonth));
+	public List<ScheduleDto> getSchedulesByYearMonth(int year, int month) {
+		return scheduleUtil.toDtoList(scheduleRepository.findByYearMonth(util.getStartDateOfMonth(year, month)
+				, util.getEndDateOfMonth(year, month)));
 	}
 	
-	public List<ScheduleDto> getOneDaySchedulesByYearMonth() {
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-		String nowYearMonth = dateFormat.format(date);
-		return util.toScheduleDtos(scheduleRepository.findOneDayByYearMonth(nowYearMonth));
+	public List<ScheduleDto> getOneDaySchedulesByYearMonth(int year, int month) {
+		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByYearMonth(util.getStartDateOfMonth(year, month)
+				, util.getEndDateOfMonth(year, month)));
 	}
 
 }

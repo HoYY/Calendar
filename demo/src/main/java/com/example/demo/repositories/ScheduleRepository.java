@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.demo.models.Schedule;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
-	@Query("select s from Schedule s where date_format(s.start_date,'%Y-%m') = ?1")
-	List<Schedule> findByYearMonth(String yearMonth);
+	@Query("select s from Schedule s where substring(s.start_date, 1, 10) between date_format(?1,'%Y.%m.%d') and "
+			+ "date_format(?2,'%Y.%m.%d') order by s.start_date")
+	List<Schedule> findByYearMonth(String startRange, String endRange);
 	
-	@Query("select s from Schedule s where date_format(s.start_date,'%Y-%m') = ?1 and "
-			+ "date_format(s.start_date,'%Y-%m-%d') = date_format(s.end_date,'%Y-%m-%d')")
-	List<Schedule> findOneDayByYearMonth(String yearMonth);
+	@Query("select s from Schedule s where (substring(s.start_date, 1, 10) between date_format(?1,'%Y.%m.%d') and date_format(?2,'%Y.%m.%d')) and "
+			+ "substring(s.start_date, 1, 10) = substring(s.end_date, 1, 10) order by s.start_date")
+	List<Schedule> findOneDayByYearMonth(String startRange, String endRange);
 }
