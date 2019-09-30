@@ -1,6 +1,7 @@
 package com.example.demo.utils;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -50,5 +51,9 @@ public class Util {
 		sb.append(String.valueOf(endDay));
 		
 		return sb.toString();
+	}
+	
+	public int calculateTerm(Date start, Date end) {
+		return (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}
 }

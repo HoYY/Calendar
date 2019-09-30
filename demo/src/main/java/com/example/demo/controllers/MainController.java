@@ -31,7 +31,7 @@ public class MainController {
 		int nowMonth = calendar.get(Calendar.MONTH) + 1;
 		List<ScheduleDto> serialSchedules = scheduleService.getSchedulesByYearMonth(nowYear, nowMonth);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(nowYear, nowMonth);
-		model.addAttribute("calendar", scheduleUtil.getDayOfYearMonth(nowYear, nowMonth, serialSchedules, oneDaySchedules));
+		model.addAttribute("calendar", scheduleUtil.createCalendar(nowYear, nowMonth, serialSchedules, oneDaySchedules));
 		return "/main/testPage";
 	}
 }
