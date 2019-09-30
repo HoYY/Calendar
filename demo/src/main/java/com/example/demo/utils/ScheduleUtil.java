@@ -90,8 +90,8 @@ public class ScheduleUtil {
 				int calendarMonth = calendar.get(Calendar.MONTH) + 1;
 				day.setDay(calendarDay);
 				day.setMonth(calendarMonth);
-				serialIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, i, serialSchedules, serialIndex, serilaLength, 1);
-				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, i, oneDaySchedules, oneDayIndex, oneDayLength, 2);
+				serialIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, serialSchedules, serialIndex, serilaLength, 1);
+				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, oneDaySchedules, oneDayIndex, oneDayLength, 2);
 				week.add(day);
 			}
 			cal.add(week);
@@ -100,41 +100,35 @@ public class ScheduleUtil {
 		return cal;
 	}
 	
-	public int addDtoToDay(Day day, Calendar calendar, Calendar tmpCalendar, SimpleDateFormat dateFormat, int dayOfWeek, List<ScheduleDto> schedules
+	public int addDtoToDay(Day day, Calendar calendar, Calendar tmpCalendar, SimpleDateFormat dateForMat, List<ScheduleDto> schedules
 			, int index, int Length, int kinds) {
-		
+				
 		//date가 같으면 Day객체에 add Dto
 		//kinds = 1 > 연속일정
 		//kinds = 2 > 일반일정
-		while(index<Length) {
-			try {
+		try {
+			while(index<Length) {
 				ScheduleDto scheduleDto = schedules.get(index);
-				Date startDate = dateFormat.parse(scheduleDto.getStartDate().substring(1, 10));
-				Date endDate = dateFormat.parse(scheduleDto.getEndDate().substring(1, 10));
+				String start = scheduleDto.getStartDate().substring(1, 10);
+				Date startDate = dateForMat.parse(start);
 				tmpCalendar.setTime(startDate);
+				
 				if(calendar.compareTo(tmpCalendar) == 0) {
-					if(kinds == 2) 
+					if(kinds == 1) 
+						day.getSerialSchedules().add(scheduleDto);	
+					else
 						day.getOneDaySchedules().add(scheduleDto);
-					else {
-						calendar.set(Calendar.DAY_OF_WEEK, 7);
-						tmpCalendar.setTime(endDate);
-						if(calendar.compareTo(tmpCalendar) >= 0) {
-							day.getSerialSchedules().add(scheduleDto);
-						}
-						else {
-							
-						}
-						calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-					}
+				
 					index++;
 				}
-				//startDate가 다르면 바로 break;
-				else break;
+				//date가 다르면 바로 break;
+				else
+					break;
 			}
-			catch(Exception e) {
-				log.error("ScheduleUtil.addDtoToDay error!!");
-				log.error(e);
-			}
+		}
+		catch(Exception e) {
+			log.error("ScheduleUtil.addDtoToDay error!!");
+			log.error(e);
 		}
 		
 		return index;
