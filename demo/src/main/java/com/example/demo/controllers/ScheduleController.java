@@ -38,7 +38,7 @@ public class ScheduleController {
 		String inputEndDate = request.getParameter("endDate");
 		String inputEndTime = request.getParameter("endTime");
 		
-		if(util.isEmpty(inputTitle) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)) {
+		if(util.isEmpty(inputTitle) || util.isEmpty(inputContents) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)) {
 			redirectAttr.addFlashAttribute("message", "empty");
 			return "redirect:/";
 		}

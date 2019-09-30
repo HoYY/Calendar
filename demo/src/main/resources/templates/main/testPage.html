@@ -52,7 +52,7 @@
 	                <div class="week" th:each="week : ${calendar}">
 	                	<div class="day" th:each="day : ${week}">
 	                		<h3 class="day-label" th:text="${day.day}"></h3>
-	                        <div class="event-consecutive event-start event-end" th:each="serialSchedule : ${day.serialSchedules}" th:if="${serialSchedule.startDate != serialSchedule.endDate}" th:data-span="${serialSchedule.term}" 
+	                        <div class="event-consecutive event-start event-end" th:each="serialSchedule : ${day.serialSchedules}" th:data-span="${serialSchedule.term}" 
 		                       	th:text="${#strings.length(serialSchedule.title) > serialSchedule.term*5 ? #strings.substring(serialSchedule.title, 0, (serialSchedule.term*5 > 35 ? 35 : serialSchedule.term*5))+'...' : serialSchedule.title}"
 		                        data-toggle="popover" data-html="true" th:data-content="${serialSchedule.data_content}">
 							</div>

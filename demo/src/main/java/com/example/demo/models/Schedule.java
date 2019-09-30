@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +27,7 @@ public class Schedule {
 	@NotNull
 	private String title;
 	
+	@NotNull
 	@Column(length=15000)
 	private String contents;
 	
@@ -38,14 +41,26 @@ public class Schedule {
 	@Column(length=3)
 	private int term;
 	
+	@NotNull
+	@Column(length=10)
+	@Enumerated(EnumType.STRING)
+	private Type type;
+	
 	
 	public Schedule() {}
-	public Schedule(String email, String title, String contents, String start_date, String end_date, int term) {
+	public Schedule(String email, String title, String contents, String start_date
+			, String end_date, int term, Type type) {
 		this.email = email;
 		this.title = title;
 		this.contents = contents;
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.term = term;
+		this.type = type;
+	}
+	
+	public enum Type{
+		SERIAL,
+		ONEDAY
 	}
 }

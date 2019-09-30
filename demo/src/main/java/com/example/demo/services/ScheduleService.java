@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.models.Schedule;
+import com.example.demo.models.Schedule.Type;
 import com.example.demo.repositories.ScheduleRepository;
 import com.example.demo.utils.ScheduleUtil;
 import com.example.demo.utils.Util;
@@ -36,7 +37,6 @@ public class ScheduleService {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 			Date inputStartDate = dateFormat.parse(startDate);
 			Date inputEndDate = dateFormat.parse(endDate);
-			int term = (int) ((inputEndDate.getTime() - inputStartDate.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 			
 			Calendar sundayCalendar = new GregorianCalendar();
 			Calendar endCalendar = new GregorianCalendar();
@@ -58,40 +58,31 @@ public class ScheduleService {
 					if(first) {
 						//end > 토요일, 처음 -> SD+ST+토요일D
 						schedule = new Schedule("test@naver.com", title, contents, startDate+startTime
-								, dateFormat.format(saturday), util.calculateTerm(inputStartDate, inputEndDate));
+								, dateFormat.format(saturday), util.calculateTerm(inputStartDate, saturday), Type.SERIAL);
 					}
 					else {
 						//end > 토요일, 처음X -> 일요일D+토요일D
 						sunday = new Date(sundayCalendar.getTimeInMillis());
 						schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday)
-								, dateFormat.format(saturday), util.calculateTerm(sunday, saturday));
+								, dateFormat.format(saturday), util.calculateTerm(sunday, saturday), Type.SERIAL);
 					}
 					//insert 하고, saturday and sunday 세팅
 					scheduleRepository.save(schedule);
-					if(saturdayCalendar.get(Calendar.WEEK_OF_MONTH) == saturdayCalendar.getMaximum(Calendar.WEEK_OF_MONTH) 
-							&& saturdayCalendar.get(Calendar.MONTH) == 11) {
-						saturdayCalendar.set(Calendar.YEAR, saturdayCalendar.get(Calendar.YEAR) +1);
-						saturdayCalendar.set(Calendar.MONTH, 0);
-						saturdayCalendar.set(Calendar.WEEK_OF_MONTH, 1);
-						sundayCalendar.set(Calendar.YEAR, saturdayCalendar.get(Calendar.YEAR));
-						sundayCalendar.set(Calendar.MONTH, saturdayCalendar.get(Calendar.MONTH));
-					}
-					else if(saturdayCalendar.get(Calendar.WEEK_OF_MONTH) == saturdayCalendar.getMaximum(Calendar.WEEK_OF_MONTH)) {
-						saturdayCalendar.set(Calendar.MONTH, saturdayCalendar.get(Calendar.MONTH) +1);
-						saturdayCalendar.set(Calendar.WEEK_OF_MONTH, 1);
-						sundayCalendar.set(Calendar.MONTH, saturdayCalendar.get(Calendar.MONTH));
-					}
-					else {
-						saturdayCalendar.set(Calendar.WEEK_OF_MONTH, saturdayCalendar.get(Calendar.WEEK_OF_MONTH) +1);
-					}
-					sundayCalendar.set(Calendar.WEEK_OF_MONTH, saturdayCalendar.get(Calendar.WEEK_OF_MONTH));
+					util.jumpOneWeek(sundayCalendar, saturdayCalendar);
 					first = false;
 				}
 				else {
 					if(first) {
-						//end <= 토요일, 처음 >> SD+ST+ED+ET
-						schedule = new Schedule("test@naver.com", title, contents, startDate+startTime, endDate+endTime
-								, util.calculateTerm(inputStartDate, inputEndDate));
+						if(startDate.equals(endDate)) {
+							//end = 토요일, 처음 >> SD+ST+ED+ET
+							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime, endDate+endTime
+									, util.calculateTerm(inputStartDate, inputEndDate), Type.ONEDAY);
+						}
+						else {
+							//end < 토요일, 처음 >> SD+ST+ED+ET
+							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime, endDate+endTime
+									, util.calculateTerm(inputStartDate, inputEndDate), Type.SERIAL);
+						}
 						scheduleRepository.save(schedule);
 						break;
 					}
@@ -99,7 +90,7 @@ public class ScheduleService {
 						//end <= 토요일, 처음X >> 일D+ED+ET
 						sunday = new Date(sundayCalendar.getTimeInMillis());
 						schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday), endDate+endTime
-								, util.calculateTerm(sunday, inputEndDate));
+								, util.calculateTerm(sunday, inputEndDate), Type.SERIAL);
 						scheduleRepository.save(schedule);
 						break;
 					}
@@ -113,14 +104,14 @@ public class ScheduleService {
 		}
 	}
 	
-	public List<ScheduleDto> getSchedulesByYearMonth(int year, int month) {
-		return scheduleUtil.toDtoList(scheduleRepository.findByYearMonth(util.getStartDateOfMonth(year, month)
-				, util.getEndDateOfMonth(year, month)));
+	public List<ScheduleDto> getSerialSchedulesByYearMonth(int year, int month) {
+		return scheduleUtil.toDtoList(scheduleRepository.findByRange(util.getStartDateOfMonth(year, month)
+				, util.getEndDateOfMonth(year, month), Type.SERIAL));
 	}
 	
 	public List<ScheduleDto> getOneDaySchedulesByYearMonth(int year, int month) {
-		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByYearMonth(util.getStartDateOfMonth(year, month)
-				, util.getEndDateOfMonth(year, month)));
+		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByRangeAndType(util.getStartDateOfMonth(year, month)
+				, util.getEndDateOfMonth(year, month), Type.ONEDAY));
 	}
 	
 	public void deleteById(int id) {

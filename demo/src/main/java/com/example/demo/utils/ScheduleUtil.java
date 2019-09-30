@@ -17,6 +17,7 @@ import com.example.demo.models.Schedule;
 @Component
 public class ScheduleUtil {
 	private static final Logger log = LogManager.getLogger(ScheduleUtil.class);
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 	
 	public List<ScheduleDto> toDtoList(List<Schedule> schedules) {
 		if(schedules == null)
@@ -73,11 +74,14 @@ public class ScheduleUtil {
 		int serilaLength = serialSchedules.size();
 		int oneDayLength = oneDaySchedules.size();
 		Calendar tmpCalendar = new GregorianCalendar();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.AM_PM, Calendar.AM);
 		
 		for(int numOfWeek=1; numOfWeek<calendar.getMaximum(Calendar.WEEK_OF_MONTH); numOfWeek++) {
 			calendar.set(Calendar.WEEK_OF_MONTH, numOfWeek);
@@ -90,8 +94,8 @@ public class ScheduleUtil {
 				int calendarMonth = calendar.get(Calendar.MONTH) + 1;
 				day.setDay(calendarDay);
 				day.setMonth(calendarMonth);
-				serialIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, serialSchedules, serialIndex, serilaLength, 1);
-				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, dateFormat, oneDaySchedules, oneDayIndex, oneDayLength, 2);
+				serialIndex = addDtoToDay(day, calendar, tmpCalendar, serialSchedules, serialIndex, serilaLength, 1);
+				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, oneDaySchedules, oneDayIndex, oneDayLength, 2);
 				week.add(day);
 			}
 			cal.add(week);
@@ -100,7 +104,7 @@ public class ScheduleUtil {
 		return cal;
 	}
 	
-	public int addDtoToDay(Day day, Calendar calendar, Calendar tmpCalendar, SimpleDateFormat dateForMat, List<ScheduleDto> schedules
+	public int addDtoToDay(Day day, Calendar calendar, Calendar tmpCalendar, List<ScheduleDto> schedules
 			, int index, int Length, int kinds) {
 				
 		//date가 같으면 Day객체에 add Dto
@@ -109,11 +113,10 @@ public class ScheduleUtil {
 		try {
 			while(index<Length) {
 				ScheduleDto scheduleDto = schedules.get(index);
-				String start = scheduleDto.getStartDate().substring(1, 10);
-				Date startDate = dateForMat.parse(start);
+				String start = scheduleDto.getStartDate().substring(0, 10);
+				Date startDate = dateFormat.parse(start);
 				tmpCalendar.setTime(startDate);
-				
-				if(calendar.compareTo(tmpCalendar) == 0) {
+				if(calendar.get(Calendar.DAY_OF_YEAR) == tmpCalendar.get(Calendar.DAY_OF_YEAR)) {
 					if(kinds == 1) 
 						day.getSerialSchedules().add(scheduleDto);	
 					else
