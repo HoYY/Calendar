@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 public class Schedule {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
 	@NotNull

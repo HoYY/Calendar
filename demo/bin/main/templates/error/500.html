@@ -1,0 +1,48 @@
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<style>
+		body {
+			background-color:#AAAAAA;
+			font-weight:bold;
+		}
+		#tcs_vFont {
+			color:white;
+		}
+		button,
+		button::after {
+		  -webkit-transition: all 0.3s;
+			-moz-transition: all 0.3s;
+		  -o-transition: all 0.3s;
+			transition: all 0.3s;
+		}
+
+		button {
+		  background: #AAAAAA;
+		  border: 3px solid #fff;
+		  border-radius: 10px;
+		  color: #fff;
+		  display: block;
+		  font-size: 20px;
+		  font-weight: bold;
+		  margin: 1em auto;
+		  padding: 15px 1.4em;
+		  position: relative;
+		  text-transform: uppercase;
+		}
+		button:hover {
+		  color: #AAAAAA;
+		  background-color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" style="text-align:center; position:relative; top:10%;">
+		<font id="tcs_vFont" style="font-size:200px; font-family:굴림;">500</font><br/>
+		<font id="tcs_vFont" style="font-size:30px; font-family:맑은고딕;">일시적 오류가 발생했습니다.</font><br/>
+		<font id="tcs_vFont" style="font-size:30px; font-family:맑은고딕;">서비스 이용에 불편을 끼쳐드려 죄송합니다.</font><br/>
+		<button type="button" onclick="history.back();">뒤로가기</button>
+	</div>
+</body>
+</html>

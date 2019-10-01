@@ -40,9 +40,7 @@ public class Util {
 	}
 	
 	public int calculateTerm(Date start, Date end) {
-		int d = (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
-		System.out.println(d);
-		return d;
+		return (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}
 	
 	public void jumpOneWeek(Calendar sundayCalendar, Calendar saturdayCalendar) {

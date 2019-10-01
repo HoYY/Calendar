@@ -116,8 +116,9 @@ public class ScheduleService {
 	
 	public void deleteById(int id) {
 		try {
-			scheduleRepository.deleteById(id);
-			log.info("Delete Schedule Success. Id : "+ id);
+			Schedule schedule = scheduleRepository.findById(id);
+			scheduleRepository.deleteByTitleAndContentsAndType(schedule.getTitle(), schedule.getContents(), schedule.getType());
+			log.info("Delete Schedule Success. Title : "+ schedule.getTitle());
 		}
 		catch(Exception e) {
 			log.error("ScheduleService.deleteById error!!");
