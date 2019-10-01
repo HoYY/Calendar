@@ -10,8 +10,9 @@ $(function () {
     $('[data-toggle="popover"]').popover().on('inserted.bs.popover')
 });
 
-$('.week, .daily-calendar').click(function() {
-    $('#registerSchedule').modal('show');
+$(function (){
+	var height = $(".week").height();
+	$(".day-label").css("padding-bottom", height);
 });
 
 $(".event-consecutive, .event, .event-repeated").click(function(event) {

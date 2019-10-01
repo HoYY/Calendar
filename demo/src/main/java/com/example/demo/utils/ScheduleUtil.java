@@ -90,10 +90,9 @@ public class ScheduleUtil {
 			for(int i=1; i<8; i++) {
 				Day day = new Day();
 				calendar.set(Calendar.DAY_OF_WEEK, i);
-				int calendarDay = calendar.get(Calendar.DAY_OF_MONTH);
-				int calendarMonth = calendar.get(Calendar.MONTH) + 1;
-				day.setDay(calendarDay);
-				day.setMonth(calendarMonth);
+				day.setYear(calendar.get(Calendar.YEAR));
+				day.setMonth(calendar.get(Calendar.MONTH) + 1);
+				day.setDay(calendar.get(Calendar.DAY_OF_MONTH));
 				serialIndex = addDtoToDay(day, calendar, tmpCalendar, serialSchedules, serialIndex, serilaLength, 1);
 				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, oneDaySchedules, oneDayIndex, oneDayLength, 2);
 				week.add(day);

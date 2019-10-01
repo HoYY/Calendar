@@ -11,8 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Day {
-	private int day;
+	private int year;
 	private int month;
+	private int day;
 	private List<ScheduleDto> serialSchedules = new ArrayList<>();
 	private List<ScheduleDto> oneDaySchedules = new ArrayList<>();
 }

@@ -17,7 +17,8 @@ public class MainController {
 		calendar.setTime(now);
 		int nowYear = calendar.get(Calendar.YEAR);
 		int nowMonth = calendar.get(Calendar.MONTH) + 1;
+		int nowDate = calendar.get(Calendar.DAY_OF_MONTH);
 		
-		return "redirect:/schedules/"+nowYear+"/"+nowMonth;
+		return "redirect:/schedules/"+nowYear+"/"+nowMonth+"/"+nowDate;
 	}
 }

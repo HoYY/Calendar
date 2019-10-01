@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,13 +38,19 @@ public class ScheduleController {
 	
 	private static final Logger log = LogManager.getLogger(ScheduleController.class);
 	
-	@GetMapping(value="/{year}/{month}")
-	public String getCalendar(@PathVariable int year, @PathVariable int month, Model model) {
+	@GetMapping(value="/{year}/{month}/{date}")
+	public String getCalendar(@PathVariable int year, @PathVariable int month, @PathVariable int date, Model model) {
+		Calendar calendar = Calendar.getInstance();
 		List<ScheduleDto> serialSchedules = scheduleService.getSerialSchedulesByYearMonth(year, month);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
 		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules));
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
+		model.addAttribute("date", date);
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.DAY_OF_MONTH, date);
+		model.addAttribute("day", calendar.get(Calendar.DAY_OF_WEEK));
 		
 		return "/main/testPage";
 	}
