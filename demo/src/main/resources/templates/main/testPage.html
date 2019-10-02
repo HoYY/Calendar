@@ -62,7 +62,7 @@
 	            </div>
 	        </div>
 	        <div class="tab-pane" id="day" role="tabpanel" aria-labelledby="tab-day">
-	            <div class="daily-calendar" th:onclick="showModalDay();"><span class="day-name" id="date"></span>
+	            <div class="daily-calendar" th:onclick="showModalDaily();"><span class="day-name" id="date"></span>
 	            	<div class="event-consecutive event-start event-end" data-toggle="popover" th:each="serialDailySchedule : ${serialDailySchedules}" 
 	                     data-html="true" data-placement="left" th:text="${#strings.length(serialDailySchedule.title) > 35 ? #strings.substring(serialDailySchedule.title, 0, 35)+'...' : serialDailySchedule.title}"
 	                     th:data-content="${serialDailySchedule.data_content}">
@@ -178,6 +178,26 @@
 	        </div>
 	    </div>
 	</div>
+	
+	<div class="modal fade" id="scheduleDeleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ModalLabel">일정 취소</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					정말 취소하시겠습니까?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">닫 기</button>
+					<button type="button" class="btn btn-danger" th:onclick="deleteSchedule(deleteId);">일정 취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="/javascript/jquery-ui.js"></script>
@@ -192,7 +212,7 @@
 	<script th:inline="javascript">
 	/*<![CDATA[*/
 		var message = /*[[${message}]]*/ 'default';
-	
+		var deleteId;
 		var now = new Date();
 		var year = /*[[${year}]]*/ '2019';
 		var month = /*[[${month}]]*/ '10';
@@ -251,20 +271,23 @@
 			$('#registerSchedule').modal('show');
 		}
 		
-		function showModalDay() {
+		function showModalDaily() {
 			if(month > 9 && date > 9) {
 				$("#startDate").val(year+"."+month+"."+date);
+				$("#endDate").val(year+"."+month+"."+date);
 			}
 			else if(month > 9) {
 				$("#startDate").val(year+"."+month+".0"+date);
+				$("#endDate").val(year+"."+month+".0"+date);
 			}
 			else if(date > 9) {
 				$("#startDate").val(year+".0"+month+"."+date);
+				$("#endDate").val(year+".0"+month+"."+date);
 			}
 			else {
-				$("#startDate").val(year+".0"+month+".0"+dates);
+				$("#startDate").val(year+".0"+month+".0"+date);
+				$("#endDate").val(year+".0"+month+".0"+date);
 			}
-			$("#startDate").val(year+"."+month+"."+date);
 			$('#registerSchedule').modal('show');
 		}
 		
@@ -293,6 +316,10 @@
 					break;
 			}
 			$("#date").text(date+"일 "+day);
+		}
+		
+		function setDeleteId(id) {
+			deleteId = id;
 		}
 	/*]]>*/	
 	</script>

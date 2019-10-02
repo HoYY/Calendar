@@ -42,8 +42,10 @@ $(function () {
 		var form = createForm("/schedules/"+id, "post");
 		var inputMethod = createInput("_method", "delete");
 		var inputScheduleId = createInput("id", id);
+		var inputIsDaily = createInput("isDaily", isActive("tab-day"));
 		form.appendChild(inputMethod);
 		form.appendChild(inputScheduleId);
+		form.appendChild(inputIsDaily);
 		document.body.appendChild(form);
 		form.submit();
 	}
@@ -63,4 +65,8 @@ function createInput(name, value) {
 	input.value = value;
 	input.type = "hidden";
 	return input;
+}
+
+function isActive(tagId) {
+	return $("#"+tagId).hasClass("active");
 }

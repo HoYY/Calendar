@@ -14,13 +14,16 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 	
 	Schedule findById(int id);
 	
-	@Query("select s from Schedule s where ((substring(s.start_date, 1, 10) between ?1 and "
-			+ "?2) or (?1 between substring(s.start_date, 1, 10) and substring(s.end_date, 1, 10))) and type = ?3 order by s.start_date")
-	List<Schedule> findSerialByRangeAndType(String startRange, String endRange, Type type);
+	@Query("select s from Schedule s where type = ?1 and ((substring(s.start_date, 1, 10) between ?2 and "
+			+ "?3) or (?2 between substring(s.start_date, 1, 10) and substring(s.end_date, 1, 10))) order by s.start_date")
+	List<Schedule> findSerialByRangeAndType(Type type, String startRange, String endRange);
 	
-	@Query("select s from Schedule s where (substring(s.start_date, 1, 10) between ?1 and ?2) and "
-			+ "s.type = ?3 order by s.start_date")
-	List<Schedule> findOneDayByRangeAndType(String startRange, String endRange, Type type);
+	@Query("select s from Schedule s where s.type = ?1 and (substring(s.start_date, 1, 10) between ?2 and ?3) "
+			+ "order by s.start_date")
+	List<Schedule> findOneDayByRangeAndType(Type type, String startRange, String endRange);
+	
+	@Query("select s from Schedule s where s.type = ?1 and ?2 between substring(s.start_date, 1, 10) and substring(s.end_date, 1, 10) order by s.start_date")
+	List<Schedule> findDailyScheduleByDateAndType(Type type, String date);
 	
 	@Transactional
 	@Modifying

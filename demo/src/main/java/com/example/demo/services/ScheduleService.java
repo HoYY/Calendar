@@ -105,23 +105,23 @@ public class ScheduleService {
 	}
 	
 	public List<ScheduleDto> getSerialSchedulesByYearMonth(int year, int month) {
-		return scheduleUtil.toDtoList(scheduleRepository.findSerialByRangeAndType(util.getStartDateOfMonth(year, month)
-				, util.getEndDateOfMonth(year, month), Type.SERIAL));
+		return scheduleUtil.toDtoList(scheduleRepository.findSerialByRangeAndType(Type.SERIAL, 
+				util.getStartDateOfMonth(year, month), util.getEndDateOfMonth(year, month)));
 	}
 	
 	public List<ScheduleDto> getOneDaySchedulesByYearMonth(int year, int month) {
-		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByRangeAndType(util.getStartDateOfMonth(year, month)
-				, util.getEndDateOfMonth(year, month), Type.ONEDAY));
+		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByRangeAndType(Type.ONEDAY,
+				util.getStartDateOfMonth(year, month), util.getEndDateOfMonth(year, month)));
 	}
 	
 	public List<ScheduleDto> getSerialDailySchedulesByYearMonthDate(int year, int month, int date) {
-		return scheduleUtil.toDtoList(scheduleRepository.findSerialByRangeAndType(
-				util.getYYYYMMDD(year, month, date), util.getYYYYMMDD(year, month, date), Type.SERIAL));
+		return scheduleUtil.toDtoList(scheduleRepository.findDailyScheduleByDateAndType(
+				Type.SERIAL, util.getYYYYMMDD(year, month, date)));
 	}
 	
 	public List<ScheduleDto> getOneDayDailySchedulesByYearMonthDate(int year, int month, int date) {
-		return scheduleUtil.toDtoList(scheduleRepository.findOneDayByRangeAndType(
-				util.getYYYYMMDD(year, month, date), util.getYYYYMMDD(year, month, date), Type.ONEDAY));
+		return scheduleUtil.toDtoList(scheduleRepository.findDailyScheduleByDateAndType(
+				Type.ONEDAY, util.getYYYYMMDD(year, month, date)));
 	}
 	
 	public void deleteById(int id) {

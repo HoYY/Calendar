@@ -58,8 +58,8 @@ public class ScheduleUtil {
 				+ "<h7 class='reservation'>"+ startDate +" "+ startTime +"<br/>"
 				+ "~ "+ endDate +" "+ endTime +"</div></div>"
 				+ "<div class='content-line'><i class='material-icons'>notes</i><div class='title'>"
-				+ "<h7 class='reservation'>"+ contents +"</h7><div><button class='btn btn-danger btn-sm mt-2' onclick='deleteSchedule(\""+ schedule.getId() +"\");'>"
-						+ "일정 삭제</button></div></div>";
+				+ "<h7 class='reservation'>"+ contents +"</h7><div><button type='button' class='btn btn-danger btn-sm mt-2' "
+						+ "data-toggle='modal' data-target='#scheduleDeleteModal' onclick='setDeleteId("+schedule.getId()+");'>일정 취소</button></div></div>";
 
 		scheduleDto.setData_content(data_content);
 		
