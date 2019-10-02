@@ -32,9 +32,15 @@ public class ScheduleService {
 	private static final Logger log = LogManager.getLogger(ScheduleService.class);
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 
+	
 	public void insertSchedule(String title, String contents, String startDate, String startTime
 			, String endDate, String endTime) {
 		try{
+			if(util.isEmpty(startTime)) {
+				startTime = "";
+				endTime = "<하루 종일>";
+			}
+			
 			Date inputStartDate = dateFormat.parse(startDate);
 			Date inputEndDate = dateFormat.parse(endDate);
 			

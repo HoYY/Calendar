@@ -120,7 +120,7 @@
 	                            <div class="form-group">
 	                                <label class="col-form-label">일정 시작 시간</label>
 	                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-	                                    <input type="text" name="startTime" class="form-control datetimepicker-input"
+	                                    <input type="text" id="startTime" name="startTime" class="form-control datetimepicker-input"
 	                                           data-target="#datetimepicker2"/>
 	                                    <div class="input-group-append" data-target="#datetimepicker2"
 	                                         data-toggle="datetimepicker">
@@ -152,7 +152,7 @@
 	                            <div class="form-group">
 	                                <label class="col-form-label">일정 종료 시간</label>
 	                                <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
-	                                    <input type="text" name="endTime" class="form-control datetimepicker-input"
+	                                    <input type="text" id="endTime" name="endTime" class="form-control datetimepicker-input"
 	                                           data-target="#datetimepicker4"/>
 	                                    <div class="input-group-append" data-target="#datetimepicker4"
 	                                         data-toggle="datetimepicker">
@@ -168,12 +168,13 @@
 	                            <label class="form-check-label" for="inlineCheckbox1">매월 반복</label>
 	                        </div>
 	                        <div class="form-check form-check-inline">
-	                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-	                            <label class="form-check-label" for="inlineCheckbox2">하루 종일</label>
+	                            <input class="form-check-input" type="checkbox" id="dayAllCheckBox" value="option2">
+	                            <label class="form-check-label" for="dayAllCheckBox">하루 종일</label>
 	                        </div>
 	                    </div>
 	            </div>
 	            <input type="hidden" id="isDaily" name="isDaily"/>
+	            <input type="hidden" id="dayAll" name="dayAll" valye="false"/>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 	                <button type="button" onclick="addSchedule();" class="btn btn-primary">일정 만들기</button>
@@ -280,7 +281,7 @@
 		
 		switch(message) {
 		case "empty":
-			alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
+			alert("입력 칸을 모두 입력해 주셔야 합니다.");
 			break;
 		case "lateThanEnd":
 			alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");

@@ -82,3 +82,20 @@ function getDate(yyyymmdd) {
 	var date = yyyymmdd.split(".");
 	return date;
 }
+
+$(function () {
+	$("#dayAllCheckBox").change(function () {
+		if($("#dayAllCheckBox").is(":checked")) {
+			$("#startTime").val("");
+			$("#endTime").val("");
+			$("#startTime").attr("disabled", true);
+			$("#endTime").attr("disabled", true);
+			$("#dayAll").val("true");
+		}
+		else {
+			$("#startTime").attr("disabled", false);
+			$("#endTime").attr("disabled", false);
+			$("#dayAll").val("false");
+		}
+	});
+});

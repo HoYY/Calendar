@@ -75,6 +75,7 @@ public class ScheduleController {
 		String inputStartTime = request.getParameter("startTime");
 		String inputEndDate = request.getParameter("endDate");
 		String inputEndTime = request.getParameter("endTime");
+		String dayAll = request.getParameter("dayAll");
 		String isDaily = request.getParameter("isDaily");
 		String referer = request.getHeader("Referer");
 		
@@ -83,9 +84,18 @@ public class ScheduleController {
 		String[] splittedReferer = referer.split("\\?");
 		redirectAttr.addFlashAttribute("isDaily", isDaily);
 		
-		if(util.isEmpty(inputTitle) || util.isEmpty(inputContents) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)) {
-			redirectAttr.addFlashAttribute("message", "empty");
-			return "redirect:"+splittedReferer[0];
+		if(dayAll.equals("true")) {
+			if(util.isEmpty(inputTitle) || util.isEmpty(inputContents) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)) {
+				redirectAttr.addFlashAttribute("message", "empty");
+				return "redirect:"+splittedReferer[0];
+			}
+		}
+		else {
+			if(util.isEmpty(inputTitle) || util.isEmpty(inputContents) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)
+					|| util.isEmpty(inputStartTime) || util.isEmpty(inputEndTime)) {
+				redirectAttr.addFlashAttribute("message", "empty");
+				return "redirect:"+splittedReferer[0];
+			}
 		}
 		
 		try {
