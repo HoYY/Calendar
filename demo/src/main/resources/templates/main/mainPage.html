@@ -1,3 +1,373 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Calendar Project</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+	<link rel="stylesheet" href="/stylesheets/calendar.css">
+</head>
+<body>
+	<div class="calendar-container">
+	    <div class="calendar-header">
+	        <button class="btn btn-light">Today</button>
+	        <!-- <div class="ico-arrow">
+	            <a class="pt-3 pb-1" href="#" onclick="lastMonth();" data-toggle="tooltip" data-placement="top" title="이전">
+	                <i class="material-icons">
+	                    chevron_left
+	                </i>
+	            </a>
+	            <a class="pt-3 pb-1" href="#" onclick="nextMonth();" data-toggle="tooltip" data-placement="top" title="다음">
+	                <i class="material-icons">
+	                    chevron_right
+	                </i>
+	            </a>
+	        </div> -->
+	        <div class="input-group date mr-3" id="datetimepicker5" data-target-input="nearest" style="width:50px;">
+	            <input type="hidden" class="form-control datetimepicker-input" data-target="#datetimepicker5"/>
+	            <div class="input-group-append" data-target="#datetimepicker5"
+	                data-toggle="datetimepicker">
+	                <div class="input-group-text" ><i class="material-icons">
+	                    calendar_today
+	                </i></div>
+                </div>
+            </div>
+	        <h4 th:text="${year}"></h4><h4>년 </h4><h4 th:text="${month}"></h4><h4>월</h4>
+	        <ul class="nav nav-tabs view-tab" id="view" role="tablist">
+	            <li class="nav-item">
+	                <a class="nav-link active" id="tab-month" data-toggle="tab" href="#month" role="tab"
+	                   aria-controls="month"
+	                   aria-selected="true">월</a>
+	            </li>
+	            <li class="nav-item">
+	                <a class="nav-link" id="tab-day" data-toggle="tab" href="#day" th:onclick="setDate([[${date}]], [[${day}]]);" role="tab" aria-controls="day"
+	                   aria-selected="false">일</a>
+	            </li>
+	        </ul>
+	    </div>
+	    <div class="tab-content">
+	        <div class="tab-pane active show" id="month" role="tabpanel" aria-labelledby="tab-month">
+	            <div class="monthly-calendar">
+	                <div class="week-day">
+	                    <div class="day-name">일</div>
+	                    <div class="day-name">월</div>
+	                    <div class="day-name">화</div>
+	                    <div class="day-name">수</div>
+	                    <div class="day-name">목</div>
+	                    <div class="day-name">금</div>
+	                    <div class="day-name">토</div>
+	                </div>
+	                <div class="week" th:each="week : ${calendar}">
+	                	<div class="day" th:each="day : ${week}"  th:id="${day.day}" th:onclick="showModal([[${day.year}]], [[${day.month}]], [[${day.day}]]);">
+	                		<h3 class="day-label" th:text="${day.day}"></h3>
+	                        <div class="event-consecutive event-start event-end" th:each="serialSchedule : ${day.serialSchedules}" th:data-span="${serialSchedule.term}" 
+		                       	th:text="${#strings.length(serialSchedule.title) > serialSchedule.term*5 ? #strings.substring(serialSchedule.title, 0, (serialSchedule.term*5 > 35 ? 35 : serialSchedule.term*5))+'...' : serialSchedule.title}"
+		                        data-toggle="popover" data-html="true" th:data-content="${serialSchedule.data_content}">
+							</div>
+							<div class="event event-start event-end" th:each="oneDaySchedule : ${day.oneDaySchedules}" th:data-span="1" 
+		                      	th:text="${#strings.length(oneDaySchedule.title) > 5 ? #strings.substring(oneDaySchedule.title, 0, 5)+'...' : oneDaySchedule.title}"
+		                        data-toggle="popover" data-html="true" th:data-content="${oneDaySchedule.data_content}">
+							</div>
+	                	</div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="tab-pane" id="day" role="tabpanel" aria-labelledby="tab-day">
+	            <div class="daily-calendar" th:onclick="showModalDay();"><span class="day-name" id="date"></span>
+	            	<div class="event-consecutive event-start event-end" data-toggle="popover" th:each="serialDailySchedule : ${serialDailySchedules}" 
+	                     data-html="true" data-placement="left" th:text="${#strings.length(serialDailySchedule.title) > 35 ? #strings.substring(serialDailySchedule.title, 0, 35)+'...' : serialDailySchedule.title}"
+	                     th:data-content="${serialDailySchedule.data_content}">
+	                </div>
+	                <div class="event event-start event-end" data-toggle="popover" th:each="oneDayDailySchedule : ${oneDayDailySchedules}" 
+	                     data-html="true" data-placement="left" th:text="${#strings.length(oneDayDailySchedule.title) > 35 ? #strings.substring(oneDayDailySchedule.title, 0, 35)+'...' : oneDayDailySchedule.title}"
+	                     th:data-content="${oneDayDailySchedule.data_content}">
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	</body>
+	<div class="modal fade" id="registerSchedule" tabindex="-1" role="dialog" aria-labelledby="registerScheduleLabel"
+	     aria-hidden="true">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="registerScheduleLabel">일정 만들기</h5>
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <form method="post" action="/schedules">
+	            <div class="modal-body">
+	                    <div class="form-group">
+	                        <label class="col-form-label">일정 제목</label>
+	                        <input type="text" name="title" class="form-control" id="recipient-name">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="message-text" class="col-form-label">일정 설명</label>
+	                        <textarea class="form-control" name="contents" id="message-text"></textarea>
+	                    </div>
+	                    <div class="form-row">
+	                        <div class="col-md-6">
+	                            <div class="form-group">
+	                                <label class="col-form-label">일정 시작 날짜</label>
+	                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+	                                    <input type="text" name="startDate" id="startDate" class="form-control datetimepicker-input"
+	                                           data-target="#datetimepicker1"/>
+	                                    <div class="input-group-append" data-target="#datetimepicker1"
+	                                         data-toggle="datetimepicker">
+	                                        <div class="input-group-text" ><i class="material-icons">
+	                                            calendar_today
+	                                        </i></div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-6">
+	                            <div class="form-group">
+	                                <label class="col-form-label">일정 시작 시간</label>
+	                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+	                                    <input type="text" name="startTime" class="form-control datetimepicker-input"
+	                                           data-target="#datetimepicker2"/>
+	                                    <div class="input-group-append" data-target="#datetimepicker2"
+	                                         data-toggle="datetimepicker">
+	                                        <div class="input-group-text"><i class="material-icons">
+	                                            access_time
+	                                        </i></div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="form-row">
+	                        <div class="col-md-6">
+	                            <div class="form-group">
+	                                <label class="col-form-label">일정 종료 날짜</label>
+	                                <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+	                                    <input type="text" name="endDate" class="form-control datetimepicker-input"
+	                                           data-target="#datetimepicker3"/>
+	                                    <div class="input-group-append" data-target="#datetimepicker3"
+	                                         data-toggle="datetimepicker">
+	                                        <div class="input-group-text"><i class="material-icons">
+	                                            calendar_today
+	                                        </i></div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-6">
+	                            <div class="form-group">
+	                                <label class="col-form-label">일정 종료 시간</label>
+	                                <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+	                                    <input type="text" name="endTime" class="form-control datetimepicker-input"
+	                                           data-target="#datetimepicker4"/>
+	                                    <div class="input-group-append" data-target="#datetimepicker4"
+	                                         data-toggle="datetimepicker">
+	                                        <div class="input-group-text"><i class="material-icons">
+	                                            access_time
+	                                        </i></div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="form-check form-check-inline">
+	                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+	                            <label class="form-check-label" for="inlineCheckbox1">매월 반복</label>
+	                        </div>
+	                        <div class="form-check form-check-inline">
+	                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+	                            <label class="form-check-label" for="inlineCheckbox2">하루 종일</label>
+	                        </div>
+	                    </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+	                <button type="submit" class="btn btn-primary">일정 만들기</button>
+	            </div>
+	            </form>
+	        </div>
+	    </div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="/javascript/jquery-ui.js"></script>
+	<script src="/javascript/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js" integrity="sha256-/As5lS2upX/fOCO/h/5wzruGngVW3xPs3N8LN4FkA5Q=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment-with-locales.min.js" integrity="sha256-rFEvCvgZWluLPnjiBNa/p3nJLJxTP1XYw4W6FZz2S98=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/locale/ko.js" integrity="sha256-52Xn0wi4kPGcROqCAA5EoontBDks09MLjv7fd5WAj3U=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+	<script src="/javascript/calendar.js"></script>
+	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		var message = /*[[${message}]]*/ 'default';
+		switch(message) {
+			case "empty":
+				alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
+				break;
+			case "lateThanEnd":
+				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
+				break;
+		}
+		
+		$(function(){
+			$('#datetimepicker5').onclick(function() {
+				$('#datetimepicker5').datetimepicker({format:"YYYY-MM-DD HH:mm"});
+			}
+					
+		});
+		
+		var now = new Date();
+		var year = /*[[${year}]]*/ '2019';
+		var month = /*[[${month}]]*/ '10';
+		var date = /*[[${date}]]*/ '1';
+		
+		function lastMonth() {
+			var tab_day = document.getElementById("tab-day");
+			var lastYear, lastMonth, lastDate;
+			if(tab_day.classList.contains("active")) {
+				if(date == 1 && month == 1) {
+					lastYear = year - 1;
+				}
+				else {
+					lastYear = year;
+				}
+			
+				if(date == 1 && month == 1){
+					lastMonth = 12
+				}
+				else if(date == 1) {
+					lastMonth = month - 1;
+				}
+				else {
+					lastMonth = month;
+				}
+			
+				if(date == 1) {
+					now.setYear(lastYear);
+					now.setMonth(month)
+					now.setDate(0);
+					lastDate = now.getDate();
+				} 
+				else {
+					lastDate = date - 1;
+				}
+				location.href="/schedules/"+lastYear+"/"+lastMonth+"/"+lastDate;
+			}
+			else {
+				var lastYear = month == 1 ? year - 1 : year;
+				var lastMonth = month == 1 ? 12 : month - 1;
+				location.href="/schedules/"+lastYear+"/"+lastMonth+"/"+date;
+			}
+		}
+		
+		function nextMonth() {
+			var tab_day = document.getElementById("tab-day");
+			var nextYear, nextMonth, nextDate;
+			if(tab_day.classList.contains("active")) {
+				if(date == 31 && month == 12) {
+					nextYear = year + 1;
+				}
+				else {
+					nextYear = year;
+				}
+				now.setYear(year);
+				now.setMonth(month);
+				now.setDate(0);
+				nextDate = now.getDate();
+				console.log(nextDate);
+				if(date == nextDate && month == 12) {
+					nextMonth = 1;
+				}
+				else if(date == nextDate) {
+					nextMonth = month + 1;
+				}
+				else {
+					nextMonth = month;
+				}
+			
+				if(date == nextDate) {
+					nextDate = 1;
+				} 
+				else {
+					nextDate = date + 1;
+				}
+				location.href="/schedules/"+nextYear+"/"+nextMonth+"/"+nextDate;
+			}
+			else {
+				var nextYear = month == 12 ? year + 1 : year;
+				var nextMonth = month == 12 ? 1 : month + 1;
+				location.href="/schedules/"+nextYear+"/"+nextMonth+"/"+date;
+			}
+		}
+		
+		function showModal(calendarYear, calendarMonth, calendarDay) {
+			if(calendarMonth > 9 && calendarDay > 9) {
+				$("#startDate").val(calendarYear+"."+calendarMonth+"."+calendarDay);
+			}
+			else if(calendarMonth > 9) {
+				$("#startDate").val(calendarYear+"."+calendarMonth+".0"+calendarDay);
+			}
+			else if(calendarDay > 9) {
+				$("#startDate").val(calendarYear+".0"+calendarMonth+"."+calendarDay);
+			}
+			else {
+				$("#startDate").val(calendarYear+".0"+calendarMonth+".0"+calendarDay);
+			}
+			$('#registerSchedule').modal('show');
+		}
+		
+		function showModalDay() {
+			if(month > 9 && date > 9) {
+				$("#startDate").val(year+"."+month+"."+date);
+			}
+			else if(month > 9) {
+				$("#startDate").val(year+"."+month+".0"+date);
+			}
+			else if(date > 9) {
+				$("#startDate").val(year+".0"+month+"."+date);
+			}
+			else {
+				$("#startDate").val(year+".0"+month+".0"+dates);
+			}
+			$("#startDate").val(year+"."+month+"."+date);
+			$('#registerSchedule').modal('show');
+		}
+		
+		function setDate(date, day) {
+			switch(day) {
+				case 1:
+					day = "일요일";
+					break;
+				case 2:
+					day = "월요일";
+					break;
+				case 3:
+					day = "화요일";
+					break;
+				case 4:
+					day = "수요일";
+					break;
+				case 5:
+					day = "목요일";
+					break;
+				case 6:
+					day = "금요일";
+					break;
+				case 7:
+					day = "토요일";
+					break;
+			}
+			$("#date").text(date+"일 "+day);
+		}
+	/*]]>*/	
+	</script>
+</body>
+</html>
+	
 <!DOCTYPE html>
 <head>
 	<title>Calendar Project</title>
@@ -401,26 +771,7 @@
 				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
 				break;
 		}
-		/* if(day == 1 && month == 1) {
-		var lastYear = year - 1;
-	}
-	else {
-		var lastYear = year;
-	}
-	
-	if(day == 1 && month == 1){
-		var lstMonth = 12
-	}
-	else if(day == 1) {
-		var lastMonth = month - 1;
-	}
-	else {
-		var lastMonth = month;
-	}
-	
-	if(day == 1){
-		day = 
-	} */
+		
 	/*]]>*/	
 	</script>
 </body>

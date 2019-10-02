@@ -39,6 +39,14 @@ public class Util {
 		return endDate;
 	}
 	
+	public String getYYYYMMDD(int year, int month, int date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.DAY_OF_MONTH, date);
+		return dateFormat.format(new Date(calendar.getTimeInMillis()));
+	}
+	
 	public int calculateTerm(Date start, Date end) {
 		return (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}

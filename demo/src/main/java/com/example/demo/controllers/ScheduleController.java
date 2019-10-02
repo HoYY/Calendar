@@ -43,7 +43,11 @@ public class ScheduleController {
 		Calendar calendar = Calendar.getInstance();
 		List<ScheduleDto> serialSchedules = scheduleService.getSerialSchedulesByYearMonth(year, month);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
+		List<ScheduleDto> serialDailySchedules = scheduleService.getSerialDailySchedulesByYearMonthDate(year, month, date);
+		List<ScheduleDto> oneDayDailySchedules = scheduleService.getOneDayDailySchedulesByYearMonthDate(year, month, date);
 		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules));
+		model.addAttribute("serialDailySchedules", serialDailySchedules);
+		model.addAttribute("oneDayDailySchedules", oneDayDailySchedules);
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("date", date);

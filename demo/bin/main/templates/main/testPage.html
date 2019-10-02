@@ -12,19 +12,16 @@
 	<div class="calendar-container">
 	    <div class="calendar-header">
 	        <button class="btn btn-light">Today</button>
-	        <div class="ico-arrow">
-	            <a class="pt-3 pb-1" href="#" onclick="lastMonth();" data-toggle="tooltip" data-placement="top" title="이전">
-	                <i class="material-icons">
-	                    chevron_left
-	                </i>
-	            </a>
-	            <a class="pt-3 pb-1" href="#" onclick="nextMonth();" data-toggle="tooltip" data-placement="top" title="다음">
-	                <i class="material-icons">
-	                    chevron_right
-	                </i>
-	            </a>
-	        </div>
-	        <h4 th:text="${year}"></h4><h4>년 </h4><h4 th:text="${month}"></h4><h4>월</h4>
+	        <div class="input-group date mr-3" id="datetimepicker5" data-target-input="nearest" style="width:50px;">
+	            <input type="hidden" id="pickerInput" class="form-control datetimepicker-input" data-target="#datetimepicker5"/>
+	            <div class="input-group-append" data-target="#datetimepicker5"
+	                data-toggle="datetimepicker">
+	                <div class="input-group-text" ><i class="material-icons">
+	                    calendar_today
+	                </i></div>
+                </div>
+            </div>
+	        <h4 id="titleDate"></h4>
 	        <ul class="nav nav-tabs view-tab" id="view" role="tablist">
 	            <li class="nav-item">
 	                <a class="nav-link active" id="tab-month" data-toggle="tab" href="#month" role="tab"
@@ -32,7 +29,7 @@
 	                   aria-selected="true">월</a>
 	            </li>
 	            <li class="nav-item">
-	                <a class="nav-link" id="tab-day" data-toggle="tab" href="#day" onclick="setDate();" role="tab" aria-controls="day"
+	                <a class="nav-link" id="tab-day" data-toggle="tab" href="#day" th:onclick="setDate([[${date}]], [[${day}]]);" role="tab" aria-controls="day"
 	                   aria-selected="false">일</a>
 	            </li>
 	        </ul>
@@ -66,29 +63,13 @@
 	        </div>
 	        <div class="tab-pane" id="day" role="tabpanel" aria-labelledby="tab-day">
 	            <div class="daily-calendar" th:onclick="showModalDay();"><span class="day-name" id="date"></span>
-	                <div class="event-consecutive event-start event-end" data-toggle="popover"
-	                     data-html="true" data-placement="left" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 1
+	            	<div class="event-consecutive event-start event-end" data-toggle="popover" th:each="serialDailySchedule : ${serialDailySchedules}" 
+	                     data-html="true" data-placement="left" th:text="${#strings.length(serialDailySchedule.title) > 35 ? #strings.substring(serialDailySchedule.title, 0, 35)+'...' : serialDailySchedule.title}"
+	                     th:data-content="${serialDailySchedule.data_content}">
 	                </div>
-	                <div class="event-consecutive event-start event-end" data-toggle="popover"
-	                     data-html="true" data-placement="left" data-content='<div class="content-line"><div class="event-consecutive-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일</div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>연속 일정 2
-	                </div>
-	                <div class="event event-start event-end" data-toggle="popover"
-	                     data-html="true" data-placement="left" data-content='<div class="content-line"><div class="event-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일<span class="reservation-time">⋅오후 2:00~ 3:00</span></div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>일반 일정 3
-	                </div>
-	                <div class="event-repeated event-start event-end" data-toggle="popover"
-	                     data-html="true" data-placement="left" data-content='<div class="content-line"><div class="event-repeated-marking"></div><div class="title"><h5>일정 1</h5><h7 class="reservation">2019년 9월 15일 – 17일<span class="reservation-time">⋅오후 2:00~ 3:00</span><span class="repeat-message">⋅매월 반복</span></div>
-	        </div><div class="content-line"><i class="material-icons">
-	notes
-	</i><div class="title"><h7 class="reservation">스케쥴 메모, 설명이 나타납니다.</div>'>반복 일정 1
+	                <div class="event event-start event-end" data-toggle="popover" th:each="oneDayDailySchedule : ${oneDayDailySchedules}" 
+	                     data-html="true" data-placement="left" th:text="${#strings.length(oneDayDailySchedule.title) > 35 ? #strings.substring(oneDayDailySchedule.title, 0, 35)+'...' : oneDayDailySchedule.title}"
+	                     th:data-content="${oneDayDailySchedule.data_content}">
 	                </div>
 	            </div>
 	        </div>
@@ -153,7 +134,7 @@
 	                            <div class="form-group">
 	                                <label class="col-form-label">일정 종료 날짜</label>
 	                                <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-	                                    <input type="text" name="endDate" class="form-control datetimepicker-input"
+	                                    <input type="text" id="endDate" name="endDate" class="form-control datetimepicker-input"
 	                                           data-target="#datetimepicker3"/>
 	                                    <div class="input-group-append" data-target="#datetimepicker3"
 	                                         data-toggle="datetimepicker">
@@ -211,6 +192,12 @@
 	<script th:inline="javascript">
 	/*<![CDATA[*/
 		var message = /*[[${message}]]*/ 'default';
+	
+		var now = new Date();
+		var year = /*[[${year}]]*/ '2019';
+		var month = /*[[${month}]]*/ '10';
+		var date = /*[[${date}]]*/ '1';
+		
 		switch(message) {
 			case "empty":
 				alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
@@ -220,13 +207,68 @@
 				break;
 		}
 		
-		var now = new Date();
-		var year = /*[[${year}]]*/ '2019';
-		var month = /*[[${month}]]*/ '10';
-		var date = /*[[${date}]]*/ '1';
-		var day = /*[[${day}]]*/ '1';
+		$(function(){
+			$('#datetimepicker5').datetimepicker({
+		        format: 'L'
+		    });
+			
+			$("#datetimepicker5").on("change.datetimepicker", function (e) {
+				var pickerInput = $("#pickerInput").val();
+				var eventDate = e.oldDate.format("YYYY.MM.DD");
+				if(pickerInput != eventDate) {
+					var date = getDate(pickerInput);
+					location.href="/schedules/"+date[0]+"/"+date[1]+"/"+date[2];
+				}
+			});
+		});
+
+		function getDate(yyyymmdd) {
+			var date = yyyymmdd.split(".");
+			return date;
+		}
 		
-		function setDate() {
+		var dates = getDate(year+"."+month+"."+date);
+		$("#titleDate").text(dates[0]+"년 "+dates[1]+"월 "+dates[2]+"일");
+		$("#pickerInput").val(year+"."+month+"."+date);
+		
+		function showModal(calendarYear, calendarMonth, calendarDay) {
+			if(calendarMonth > 9 && calendarDay > 9) {
+				$("#startDate").val(calendarYear+"."+calendarMonth+"."+calendarDay);
+				$("#endDate").val(calendarYear+"."+calendarMonth+"."+calendarDay);
+			}
+			else if(calendarMonth > 9) {
+				$("#startDate").val(calendarYear+"."+calendarMonth+".0"+calendarDay);
+				$("#endDate").val(calendarYear+"."+calendarMonth+".0"+calendarDay);
+			}
+			else if(calendarDay > 9) {
+				$("#startDate").val(calendarYear+".0"+calendarMonth+"."+calendarDay);
+				$("#endDate").val(calendarYear+".0"+calendarMonth+"."+calendarDay);
+			}
+			else {
+				$("#startDate").val(calendarYear+".0"+calendarMonth+".0"+calendarDay);
+				$("#endDate").val(calendarYear+".0"+calendarMonth+".0"+calendarDay);
+			}
+			$('#registerSchedule').modal('show');
+		}
+		
+		function showModalDay() {
+			if(month > 9 && date > 9) {
+				$("#startDate").val(year+"."+month+"."+date);
+			}
+			else if(month > 9) {
+				$("#startDate").val(year+"."+month+".0"+date);
+			}
+			else if(date > 9) {
+				$("#startDate").val(year+".0"+month+"."+date);
+			}
+			else {
+				$("#startDate").val(year+".0"+month+".0"+dates);
+			}
+			$("#startDate").val(year+"."+month+"."+date);
+			$('#registerSchedule').modal('show');
+		}
+		
+		function setDate(date, day) {
 			switch(day) {
 				case 1:
 					day = "일요일";
@@ -251,95 +293,6 @@
 					break;
 			}
 			$("#date").text(date+"일 "+day);
-		}
-		
-		function lastMonth() {
-			var tab_day = document.getElementById("tab-day");
-			var lastYear, lastMonth, lastDate;
-			if(tab_day.classList.contains("active")) {
-				if(date == 1 && month == 1) {
-					lastYear = year - 1;
-				}
-				else {
-					lastYear = year;
-				}
-			
-				if(date == 1 && month == 1){
-					lastMonth = 12
-				}
-				else if(date == 1) {
-					lastMonth = month - 1;
-				}
-				else {
-					lastMonth = month;
-				}
-			
-				if(date == 1) {
-					now.setYear(lastYear);
-					now.setMonth(month)
-					now.setDate(0);
-					lastDate = now.getDate();
-				} 
-				else {
-					lastDate = date - 1;
-				}
-				location.href="/schedules/"+lastYear+"/"+lastMonth+"/"+lastDate;
-			}
-			else {
-				var lastYear = month == 1 ? year - 1 : year;
-				var lastMonth = month == 1 ? 12 : month - 1;
-				location.href="/schedules/"+lastYear+"/"+lastMonth+"/"+date;
-			}
-		}
-		
-		function nextMonth() {
-			var tab_day = document.getElementById("tab-day");
-			var nextYear, nextMonth, nextDate;
-			if(tab_day.classList.contains("active")) {
-				if(date == 31 && month == 12) {
-					nextYear = year + 1;
-				}
-				else {
-					nextYear = year;
-				}
-				now.setYear(year);
-				now.setMonth(month);
-				now.setDate(0);
-				nextDate = now.getDate();
-				console.log(nextDate);
-				if(date == nextDate && month == 12) {
-					nextMonth = 1;
-				}
-				else if(date == nextDate) {
-					nextMonth = month + 1;
-				}
-				else {
-					nextMonth = month;
-				}
-			
-				if(date == nextDate) {
-					nextDate = 1;
-				} 
-				else {
-					nextDate = date + 1;
-				}
-				location.href="/schedules/"+nextYear+"/"+nextMonth+"/"+nextDate;
-			}
-			else {
-				var nextYear = month == 12 ? year + 1 : year;
-				var nextMonth = month == 12 ? 1 : month + 1;
-				location.href="/schedules/"+nextYear+"/"+nextMonth+"/"+date;
-			}
-		}
-		
-		function showModal(calendarYear, calendarMonth, calendarDay) {
-			$("#startDate").val(calendarYear+"."+calendarMonth+"."+calendarDay);
-			$('#registerSchedule').modal('show');
-		}
-		
-		function showModalDay() {
-			$("#startDate").val(year+"."+month+"."+date);
-			$('#registerSchedule').modal('show');
 		}
 	/*]]>*/	
 	</script>
