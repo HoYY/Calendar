@@ -11,7 +11,7 @@
 <body>
 	<div class="calendar-container">
 	    <div class="calendar-header">
-	        <button class="btn btn-light">Today</button>
+	        <button class="btn btn-light" onclick="today();">Today</button>
 	        <div class="input-group date mr-3" id="datetimepicker5" data-target-input="nearest" style="width:50px;">
 	            <input type="hidden" id="pickerInput" class="form-control datetimepicker-input" data-target="#datetimepicker5"/>
 	            <div class="input-group-append" data-target="#datetimepicker5"
@@ -218,7 +218,6 @@
 		var message = /*[[${message}]]*/ 'default';
 		var isDaily = /*[[${isDaily}]]*/ 'false';
 		var deleteId;
-		var now = new Date();
 		var year = /*[[${year}]]*/ '2019';
 		var month = /*[[${month}]]*/ '10';
 		var date = /*[[${date}]]*/ '1';
@@ -279,6 +278,15 @@
 		$("#titleDate").text(dates[0]+"년 "+dates[1]+"월 "+dates[2]+"일");
 		$("#pickerInput").val(year+"."+month+"."+date);
 		
+		switch(message) {
+		case "empty":
+			alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
+			break;
+		case "lateThanEnd":
+			alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
+			break;
+		}
+		
 		function showModal(calendarYear, calendarMonth, calendarDay) {
 			if(calendarMonth > 9 && calendarDay > 9) {
 				$("#startDate").val(calendarYear+"."+calendarMonth+"."+calendarDay);
@@ -322,6 +330,19 @@
 		function addSchedule() {
 			$("#isDaily").val(isActive("tab-day"));
 			$("#addForm").submit();
+		}
+		
+		function today() {
+			var now = new Date();
+			var year = now.getYear()+1900;
+			var month = now.getMonth()+1;
+			var date = now.getDate();
+			var action = "/schedules/"+year+"/"+month+"/"+date;
+			var form = createForm(action, "get");
+			var isDaily = createInput("isDaily", isActive("tab-day"));
+			form.appendChild(isDaily);
+			document.body.appendChild(form);
+			form.submit();
 		}
 	/*]]>*/	
 	</script>
