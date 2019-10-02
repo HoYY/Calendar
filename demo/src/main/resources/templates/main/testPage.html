@@ -90,7 +90,7 @@
 	                    <span aria-hidden="true">&times;</span>
 	                </button>
 	            </div>
-	            <form method="post" action="/schedules">
+	            <form id="addForm" method="post" action="/schedules">
 	            <div class="modal-body">
 	                    <div class="form-group">
 	                        <label class="col-form-label">일정 제목</label>
@@ -173,9 +173,10 @@
 	                        </div>
 	                    </div>
 	            </div>
+	            <input type="hidden" id="isDaily" name="isDaily"/>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-	                <button type="submit" class="btn btn-primary">일정 만들기</button>
+	                <button type="button" onclick="addSchedule();" class="btn btn-primary">일정 만들기</button>
 	            </div>
 	            </form>
 	        </div>
@@ -316,6 +317,11 @@
 				$("#endDate").val(year+".0"+month+".0"+date);
 			}
 			$('#registerSchedule').modal('show');
+		}
+		
+		function addSchedule() {
+			$("#isDaily").val(isActive("tab-day"));
+			$("#addForm").submit();
 		}
 	/*]]>*/	
 	</script>

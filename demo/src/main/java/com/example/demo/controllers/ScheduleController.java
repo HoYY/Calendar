@@ -43,17 +43,22 @@ public class ScheduleController {
 			, HttpServletRequest request) {
 		Calendar calendar = Calendar.getInstance();
 		String isDaily = request.getParameter("isDaily");
+		
 		List<ScheduleDto> serialSchedules = scheduleService.getSerialSchedulesByYearMonth(year, month);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
 		List<ScheduleDto> serialDailySchedules = scheduleService.getSerialDailySchedulesByYearMonthDate(year, month, date);
 		List<ScheduleDto> oneDayDailySchedules = scheduleService.getOneDayDailySchedulesByYearMonthDate(year, month, date);
+		
 		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules));
 		model.addAttribute("serialDailySchedules", serialDailySchedules);
 		model.addAttribute("oneDayDailySchedules", oneDayDailySchedules);
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("date", date);
-		model.addAttribute("isDaily", isDaily);
+		
+		if(isDaily != null)
+			model.addAttribute("isDaily", isDaily);
+		
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.MONTH, month-1);
 		calendar.set(Calendar.DAY_OF_MONTH, date);
@@ -70,11 +75,17 @@ public class ScheduleController {
 		String inputStartTime = request.getParameter("startTime");
 		String inputEndDate = request.getParameter("endDate");
 		String inputEndTime = request.getParameter("endTime");
+		String isDaily = request.getParameter("isDaily");
 		String referer = request.getHeader("Referer");
+		
+		if(referer == null) 
+			return "redirect:/";
+		String[] splittedReferer = referer.split("\\?");
+		redirectAttr.addFlashAttribute("isDaily", isDaily);
 		
 		if(util.isEmpty(inputTitle) || util.isEmpty(inputContents) || util.isEmpty(inputStartDate) || util.isEmpty(inputEndDate)) {
 			redirectAttr.addFlashAttribute("message", "empty");
-			return "redirect:"+referer;
+			return "redirect:"+splittedReferer[0];
 		}
 		
 		try {
@@ -83,7 +94,7 @@ public class ScheduleController {
 			Date endDate = dateFormat.parse(inputEndDate);
 			if(startDate.getTime() > endDate.getTime()) {
 				redirectAttr.addFlashAttribute("message", "lateThanEnd");
-				return "redirect:"+referer;
+				return "redirect:"+splittedReferer[0];
 			}
 		}
 		catch(Exception e) {
@@ -94,14 +105,20 @@ public class ScheduleController {
 		scheduleService.insertSchedule(inputTitle, inputContents, inputStartDate, inputStartTime
 				, inputEndDate, inputEndTime);
 		
-		return "redirect:"+referer;
+		return "redirect:"+splittedReferer[0];
 	}
 	
 	@DeleteMapping(value="/{id}")
-	public String deleteSchedule(@PathVariable int id, HttpServletRequest request) {
+	public String deleteSchedule(@PathVariable int id, HttpServletRequest request, RedirectAttributes redirectAttr) {
 		scheduleService.deleteById(id);
-		String[] referer = request.getHeader("Referer").split("\\?");
+		String referer = request.getHeader("Referer");
 		String isDaily = request.getParameter("isDaily");
-		return "redirect:"+referer[0]+"?isDaily="+isDaily;
+		
+		if(referer == null) 
+			return "redirect:/";
+		String[] splittedReferer = referer.split("\\?");
+		redirectAttr.addFlashAttribute("isDaily", isDaily);
+		
+		return "redirect:"+splittedReferer[0];
 	}
 }
