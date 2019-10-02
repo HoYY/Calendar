@@ -70,3 +70,15 @@ function createInput(name, value) {
 function isActive(tagId) {
 	return $("#"+tagId).hasClass("active");
 }
+
+$(function () {
+	function setDeleteId(id) {
+		deleteId = id;
+	}
+	window.setDeleteId = setDeleteId;
+});
+
+function getDate(yyyymmdd) {
+	var date = yyyymmdd.split(".");
+	return date;
+}

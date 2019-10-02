@@ -39,8 +39,10 @@ public class ScheduleController {
 	private static final Logger log = LogManager.getLogger(ScheduleController.class);
 	
 	@GetMapping(value="/{year}/{month}/{date}")
-	public String getCalendar(@PathVariable int year, @PathVariable int month, @PathVariable int date, Model model) {
+	public String getCalendar(@PathVariable int year, @PathVariable int month, @PathVariable int date, Model model
+			, HttpServletRequest request) {
 		Calendar calendar = Calendar.getInstance();
+		String isDaily = request.getParameter("isDaily");
 		List<ScheduleDto> serialSchedules = scheduleService.getSerialSchedulesByYearMonth(year, month);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
 		List<ScheduleDto> serialDailySchedules = scheduleService.getSerialDailySchedulesByYearMonthDate(year, month, date);
@@ -51,6 +53,7 @@ public class ScheduleController {
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("date", date);
+		model.addAttribute("isDaily", isDaily);
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.MONTH, month-1);
 		calendar.set(Calendar.DAY_OF_MONTH, date);

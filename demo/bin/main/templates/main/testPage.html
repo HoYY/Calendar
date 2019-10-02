@@ -24,18 +24,21 @@
 	        <h4 id="titleDate"></h4>
 	        <ul class="nav nav-tabs view-tab" id="view" role="tablist">
 	            <li class="nav-item">
-	                <a class="nav-link active" id="tab-month" data-toggle="tab" href="#month" role="tab"
+	                <a class="nav-link" id="tab-month" data-toggle="tab" href="#month" role="tab"
 	                   aria-controls="month"
 	                   aria-selected="true">월</a>
 	            </li>
 	            <li class="nav-item">
-	                <a class="nav-link" id="tab-day" data-toggle="tab" href="#day" th:onclick="setDate([[${date}]], [[${day}]]);" role="tab" aria-controls="day"
+	                <a class="nav-link" id="tab-day" data-toggle="tab" href="#day" role="tab" aria-controls="day"
 	                   aria-selected="false">일</a>
 	            </li>
 	        </ul>
 	    </div>
 	    <div class="tab-content">
-	        <div class="tab-pane active show" id="month" role="tabpanel" aria-labelledby="tab-month">
+	    	<div class="tab-pane active show">
+	    		<div class="daily-calendar"></div>
+	    	</div>
+	        <div class="tab-pane" id="month" role="tabpanel" aria-labelledby="tab-month">
 	            <div class="monthly-calendar">
 	                <div class="week-day">
 	                    <div class="day-name">일</div>
@@ -212,22 +215,47 @@
 	<script th:inline="javascript">
 	/*<![CDATA[*/
 		var message = /*[[${message}]]*/ 'default';
+		var isDaily = /*[[${isDaily}]]*/ 'false';
 		var deleteId;
 		var now = new Date();
 		var year = /*[[${year}]]*/ '2019';
 		var month = /*[[${month}]]*/ '10';
 		var date = /*[[${date}]]*/ '1';
+		var day = /*[[${day}]]*/ '1'; //sunday
 		
-		switch(message) {
-			case "empty":
-				alert("일정 제목, 일정 설명, 일정 시작 날짜, 일정 종료 날짜는 모두 입력해 주셔야 합니다.");
-				break;
-			case "lateThanEnd":
-				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
-				break;
-		}
+		$(function () {
+			switch(day) {
+				case 1:
+					day = "일요일";
+					break;
+				case 2:
+					day = "월요일";
+					break;
+				case 3:
+					day = "화요일";
+					break;
+				case 4:
+					day = "수요일";
+					break;
+				case 5:
+					day = "목요일";
+					break;
+				case 6:
+					day = "금요일";
+					break;
+				case 7:
+					day = "토요일";
+					break;
+			}
+			$("#date").text(date+"일 "+day);
+			
+			if(isDaily == "true") 
+				$("#tab-day").tab("show");
+			else 
+				$("#tab-month").tab("show");
+		});
 		
-		$(function(){
+		$(function() {
 			$('#datetimepicker5').datetimepicker({
 		        format: 'L'
 		    });
@@ -237,16 +265,15 @@
 				var eventDate = e.oldDate.format("YYYY.MM.DD");
 				if(pickerInput != eventDate) {
 					var date = getDate(pickerInput);
-					location.href="/schedules/"+date[0]+"/"+date[1]+"/"+date[2];
+					var form = createForm("/schedules/"+date[0]+"/"+date[1]+"/"+date[2], "get");
+					var inputIsDaily = createInput("isDaily", isActive("tab-day"));
+					form.appendChild(inputIsDaily);
+					document.body.appendChild(form);
+					form.submit();
 				}
 			});
 		});
 
-		function getDate(yyyymmdd) {
-			var date = yyyymmdd.split(".");
-			return date;
-		}
-		
 		var dates = getDate(year+"."+month+"."+date);
 		$("#titleDate").text(dates[0]+"년 "+dates[1]+"월 "+dates[2]+"일");
 		$("#pickerInput").val(year+"."+month+"."+date);
@@ -289,37 +316,6 @@
 				$("#endDate").val(year+".0"+month+".0"+date);
 			}
 			$('#registerSchedule').modal('show');
-		}
-		
-		function setDate(date, day) {
-			switch(day) {
-				case 1:
-					day = "일요일";
-					break;
-				case 2:
-					day = "월요일";
-					break;
-				case 3:
-					day = "화요일";
-					break;
-				case 4:
-					day = "수요일";
-					break;
-				case 5:
-					day = "목요일";
-					break;
-				case 6:
-					day = "금요일";
-					break;
-				case 7:
-					day = "토요일";
-					break;
-			}
-			$("#date").text(date+"일 "+day);
-		}
-		
-		function setDeleteId(id) {
-			deleteId = id;
 		}
 	/*]]>*/	
 	</script>
