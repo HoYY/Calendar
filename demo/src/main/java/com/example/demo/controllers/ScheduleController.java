@@ -100,7 +100,8 @@ public class ScheduleController {
 	@DeleteMapping(value="/{id}")
 	public String deleteSchedule(@PathVariable int id, HttpServletRequest request) {
 		scheduleService.deleteById(id);
-		String referer = request.getHeader("Referer");
-		return "redirect:"+referer;
+		String[] referer = request.getHeader("Referer").split("\\?");
+		String isDaily = request.getParameter("isDaily");
+		return "redirect:"+referer[0]+"?isDaily="+isDaily;
 	}
 }
