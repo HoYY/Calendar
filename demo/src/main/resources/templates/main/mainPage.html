@@ -9,6 +9,8 @@
 	<link rel="stylesheet" href="/stylesheets/calendar.css">
 </head>
 <body>
+	<div>
+	<div class="alert alert-danger" role="alert" th:if="${fieldError != null}" th:text="${fieldError.getDefaultMessage()}"></div>
 	<div class="calendar-container">
 	    <div class="calendar-header">
 	        <button class="btn btn-light" onclick="today();">Today</button>
@@ -85,6 +87,7 @@
 	            </div>
 	        </div>
 	    </div>
+	</div>
 	</div>
 	
 	</body>
@@ -278,9 +281,7 @@
 				var eventDate = e.oldDate.format("YYYY.MM.DD");
 				if(pickerInput != eventDate) {
 					var date = getDate(pickerInput);
-					var form = createForm("/schedules/"+date[0]+"/"+date[1]+"/"+date[2], "get");
-					var inputIsDaily = createInput("isDaily", isActive("tab-day"));
-					form.appendChild(inputIsDaily);
+					var form = createForm("/schedules/"+date[0]+"/"+date[1]+"/"+date[2]+"/"+isActive("tab-day"), "get");
 					document.body.appendChild(form);
 					form.submit();
 				}
@@ -290,20 +291,6 @@
 		var dates = getDate(year+"."+month+"."+date);
 		$("#titleDate").text(dates[0]+"년 "+dates[1]+"월 "+dates[2]+"일");
 		$("#pickerInput").val(year+"."+month+"."+date);
-		
-		switch(message) {
-			case "empty":
-				alert("입력 칸을 모두 입력해 주셔야 합니다.");
-				break;
-			case "lateThanEnd":
-				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
-				break;
-			case "longerThanWeek":
-				alert("매주 반복 일정은 7일을 넘길 수 없습니다.");
-				break;
-			case "notSameDate":
-				alert("매일 반복 일정은 시작 날짜와 종료 날짜가 같아야 합니다.")
-		}
 		
 		function showModal(calendarYear, calendarMonth, calendarDay) {
 			if(calendarMonth > 9 && calendarDay > 9) {
@@ -355,10 +342,8 @@
 			var year = now.getYear()+1900;
 			var month = now.getMonth()+1;
 			var date = now.getDate();
-			var action = "/schedules/"+year+"/"+month+"/"+date;
+			var action = "/schedules/"+year+"/"+month+"/"+date+"/"+isActive("tab-day");
 			var form = createForm(action, "get");
-			var isDaily = createInput("isDaily", isActive("tab-day"));
-			form.appendChild(isDaily);
 			document.body.appendChild(form);
 			form.submit();
 		}

@@ -51,14 +51,33 @@ public class Util {
 		return (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}
 	
+	public void jumpOneMonth(Calendar calendar, int original, boolean isMax) {
+		if(calendar.get(Calendar.MONTH) == 11) {
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
+			calendar.set(Calendar.MONTH, 0);
+		}
+		else {
+			calendar.add(Calendar.MONTH, 1);
+		}
+		
+		int maxDayOfNextMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		int dayOfNextMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		if(isMax) {
+			calendar.set(Calendar.DAY_OF_MONTH, maxDayOfNextMonth);
+			System.out.println(maxDayOfNextMonth);
+		}
+		else if(original > dayOfNextMonth && maxDayOfNextMonth != dayOfNextMonth) {
+			calendar.set(Calendar.DAY_OF_MONTH, original);
+		}
+	}
+	
 	public void jumpOneWeek(Calendar calendar) {
-		int maxDayOfYear = calendar.getMaximum(Calendar.DAY_OF_YEAR) - 1;
+		int maxDayOfYear = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
 		int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 
 		if(dayOfYear + 7 > maxDayOfYear) {
 			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
 			calendar.set(Calendar.DAY_OF_YEAR, 7 - (maxDayOfYear-dayOfYear));
-			System.out.println(calendar.get(Calendar.DAY_OF_YEAR));
 		}
 		else {
 			calendar.set(Calendar.DAY_OF_YEAR, dayOfYear + 7);
@@ -66,7 +85,7 @@ public class Util {
 	}
 	
 	public void jumpOneDay(Calendar calendar) {
-		int maxDayOfYear = calendar.getMaximum(Calendar.DAY_OF_YEAR) - 1;
+		int maxDayOfYear = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
 		int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 
 		if(dayOfYear == maxDayOfYear) {

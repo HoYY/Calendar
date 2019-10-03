@@ -33,9 +33,16 @@ public class ScheduleService {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 
 	
-	public void insertSchedule(String title, String contents, String startDate, String startTime
-			, String endDate, String endTime) {
+	public void insertSchedule(ScheduleDto scheduleDto) {
 		try{
+			String title = scheduleDto.getTitle();
+			String contents = scheduleDto.getContents();
+			String startDate = scheduleDto.getStartDate();
+			String startTime = scheduleDto.getStartTime();
+			String endDate = scheduleDto.getEndDate();
+			String endTime = scheduleDto.getEndTime();
+			Type type = scheduleDto.getType();
+			
 			if(util.isEmpty(startTime)) {
 				startTime = "";
 				endTime = "<하루 종일>";
@@ -65,24 +72,28 @@ public class ScheduleService {
 						//end > 토요일, 처음, 하루종일 -> SD+ST+토요일D+ET
 						if(endTime.equals("<하루 종일>"))
 							schedule = new Schedule(title, contents, startDate+startTime
-									, dateFormat.format(saturday)+endTime, util.calculateTerm(inputStartDate, saturday), Type.SERIAL);
+									, dateFormat.format(saturday)+endTime, util.calculateTerm(inputStartDate, saturday)
+									, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 						
 						//end > 토요일, 처음 -> SD+ST+토요일D
 						else
 							schedule = new Schedule(title, contents, startDate+startTime
-									, dateFormat.format(saturday), util.calculateTerm(inputStartDate, saturday), Type.SERIAL);
+									, dateFormat.format(saturday), util.calculateTerm(inputStartDate, saturday)
+									, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 					}
 					else {
 						//end > 토요일, 처음X, 하루종일 -> 일요일D+토요일D+ET
 						sunday = new Date(sundayCalendar.getTimeInMillis());
 						if(endTime.equals("<하루 종일>"))
 							schedule = new Schedule(title, contents, dateFormat.format(sunday)
-									, dateFormat.format(saturday)+endTime, util.calculateTerm(sunday, saturday), Type.SERIAL);
+									, dateFormat.format(saturday)+endTime, util.calculateTerm(sunday, saturday)
+									, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 						
 						//end > 토요일, 처음X -> 일요일D+토요일D
 						else
 							schedule = new Schedule(title, contents, dateFormat.format(sunday)
-									, dateFormat.format(saturday), util.calculateTerm(sunday, saturday), Type.SERIAL);
+									, dateFormat.format(saturday), util.calculateTerm(sunday, saturday)
+									, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 					}
 					//insert 하고, saturday and sunday 세팅
 					scheduleRepository.save(schedule);
@@ -95,12 +106,14 @@ public class ScheduleService {
 						if(startDate.equals(endDate)) 
 							//end = 토요일, 처음 >> SD+ST+ED+ET
 							schedule = new Schedule(title, contents, startDate+startTime, endDate+endTime
-									, util.calculateTerm(inputStartDate, inputEndDate), Type.ONEDAY);
+									, util.calculateTerm(inputStartDate, inputEndDate)
+									, type == Type.REPETITION ? Type.REPETITION : Type.ONEDAY);
 						
 						else 
 							//end < 토요일, 처음 >> SD+ST+ED+ET
 							schedule = new Schedule(title, contents, startDate+startTime, endDate+endTime
-									, util.calculateTerm(inputStartDate, inputEndDate), Type.SERIAL);
+									, util.calculateTerm(inputStartDate, inputEndDate)
+									, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 						
 						scheduleRepository.save(schedule);
 						break;
@@ -109,7 +122,8 @@ public class ScheduleService {
 						//end <= 토요일, 처음X >> 일D+ED+ET
 						sunday = new Date(sundayCalendar.getTimeInMillis());
 						schedule = new Schedule(title, contents, dateFormat.format(sunday), endDate+endTime
-								, util.calculateTerm(sunday, inputEndDate), Type.SERIAL);
+								, util.calculateTerm(sunday, inputEndDate)
+								, type == Type.REPETITION ? Type.REPETITION : Type.SERIAL);
 						scheduleRepository.save(schedule);
 						break;
 					}
@@ -123,8 +137,13 @@ public class ScheduleService {
 		}
 	}
 	
-	public void insertScheduleEveryWeek(String title, String contents, String startDate, String startTime
-			, String endDate, String endTime) {
+	public void insertScheduleEveryWeek(ScheduleDto scheduleDto) {
+		String title = scheduleDto.getTitle();
+		String contents = scheduleDto.getContents();
+		String startDate = scheduleDto.getStartDate();
+		String startTime = scheduleDto.getStartTime();
+		String endTime = scheduleDto.getEndTime();
+		
 		if(util.isEmpty(startTime)) {
 			startTime = "";
 			endTime = "<하루 종일>";
@@ -132,7 +151,7 @@ public class ScheduleService {
 		
 		try {
 			Date inputStartDate = dateFormat.parse(startDate);
-			Date inputEndDate = dateFormat.parse(endDate);
+			Date inputEndDate = dateFormat.parse(scheduleDto.getEndDate());
 			
 			Calendar startCalendar = new GregorianCalendar();
 			Calendar endCalendar = new GregorianCalendar();
@@ -195,8 +214,13 @@ public class ScheduleService {
 		}
 	}
 	
-	public void insertScheduleEveryDay(String title, String contents, String startDate, String startTime
-			, String endDate, String endTime) {
+	public void insertScheduleEveryDay(ScheduleDto scheduleDto) {
+		String title = scheduleDto.getTitle();
+		String contents = scheduleDto.getContents();
+		String startDate = scheduleDto.getStartDate();
+		String startTime = scheduleDto.getStartTime();
+		String endTime = scheduleDto.getEndTime();
+		
 		if(util.isEmpty(startTime)) {
 			startTime = "";
 			endTime = "<하루 종일>";
@@ -204,7 +228,6 @@ public class ScheduleService {
 		
 		try {
 			Date inputStartDate = dateFormat.parse(startDate);
-			Date inputEndDate = dateFormat.parse(endDate);
 			
 			Calendar calendar = new GregorianCalendar();
 			
@@ -219,6 +242,39 @@ public class ScheduleService {
 						, scheduleDate+endTime, 1, Type.REPETITION);
 				scheduleRepository.save(schedule);
 				util.jumpOneDay(calendar);
+			}
+		}
+		catch(Exception e) {
+			
+		}
+	}
+	
+	public void insertScheduleEveryMonth(ScheduleDto scheduleDto) {
+		scheduleDto.setType(Type.REPETITION);
+		
+		try {
+			Date inputStartDate = dateFormat.parse(scheduleDto.getStartDate());
+			Date inputEndDate = dateFormat.parse(scheduleDto.getEndDate());
+			
+			Calendar startCalendar = new GregorianCalendar();
+			Calendar endCalendar = new GregorianCalendar();
+			
+			startCalendar.setTime(inputStartDate);
+			endCalendar.setTime(inputEndDate);
+			int originalStartDate = startCalendar.get(Calendar.DAY_OF_MONTH);
+			int originalEndDate = endCalendar.get(Calendar.DAY_OF_MONTH);
+			boolean isMax = originalEndDate == endCalendar.getMaximum(Calendar.DAY_OF_MONTH);
+			Date start;
+			Date end;
+			
+			for(int i=0; i<12; i++) {
+				insertSchedule(scheduleDto);
+				util.jumpOneMonth(startCalendar, originalStartDate, false);
+				util.jumpOneMonth(endCalendar, originalEndDate, isMax);
+				start = new Date(startCalendar.getTimeInMillis());
+				end = new Date(endCalendar.getTimeInMillis());
+				scheduleDto.setStartDate(dateFormat.format(start));
+				scheduleDto.setEndDate(dateFormat.format(end));
 			}
 		}
 		catch(Exception e) {
