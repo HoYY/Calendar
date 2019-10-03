@@ -21,10 +21,6 @@ public class Schedule {
 	private int id;
 	
 	@NotNull
-	@Column(length=50)
-	private String email;
-	
-	@NotNull
 	private String title;
 	
 	@NotNull
@@ -48,9 +44,8 @@ public class Schedule {
 	
 	
 	public Schedule() {}
-	public Schedule(String email, String title, String contents, String start_date
+	public Schedule(String title, String contents, String start_date
 			, String end_date, int term, Type type) {
-		this.email = email;
 		this.title = title;
 		this.contents = contents;
 		this.start_date = start_date;

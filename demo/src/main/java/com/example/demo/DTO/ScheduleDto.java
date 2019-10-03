@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleDto {
-	private String email;
 	private String title;	
 	private String startDate;
 	private String startTime;
@@ -27,6 +26,6 @@ public class ScheduleDto {
 	private String contents;
 	
 	public Schedule toEntity() {
-		return new Schedule(email, title, contents, startDate+startTime, endDate+endTime, term, type);
+		return new Schedule(title, contents, startDate+startTime, endDate+endTime, term, type);
 	}
 }

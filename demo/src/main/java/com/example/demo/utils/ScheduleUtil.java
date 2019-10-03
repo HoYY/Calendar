@@ -44,7 +44,6 @@ public class ScheduleUtil {
 		String endTime = end.substring(10, end.length());
 		
 		ScheduleDto scheduleDto = new ScheduleDto();
-		scheduleDto.setEmail(schedule.getEmail());
 		scheduleDto.setTitle(title);
 		scheduleDto.setContents(contents);
 		scheduleDto.setStartDate(startDate);

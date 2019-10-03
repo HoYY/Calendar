@@ -64,24 +64,24 @@ public class ScheduleService {
 					if(first) {
 						//end > 토요일, 처음, 하루종일 -> SD+ST+토요일D+ET
 						if(endTime.equals("<하루 종일>"))
-							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime
+							schedule = new Schedule(title, contents, startDate+startTime
 									, dateFormat.format(saturday)+endTime, util.calculateTerm(inputStartDate, saturday), Type.SERIAL);
 						
 						//end > 토요일, 처음 -> SD+ST+토요일D
 						else
-							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime
+							schedule = new Schedule(title, contents, startDate+startTime
 									, dateFormat.format(saturday), util.calculateTerm(inputStartDate, saturday), Type.SERIAL);
 					}
 					else {
 						//end > 토요일, 처음X, 하루종일 -> 일요일D+토요일D+ET
 						sunday = new Date(sundayCalendar.getTimeInMillis());
 						if(endTime.equals("<하루 종일>"))
-							schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday)
+							schedule = new Schedule(title, contents, dateFormat.format(sunday)
 									, dateFormat.format(saturday)+endTime, util.calculateTerm(sunday, saturday), Type.SERIAL);
 						
 						//end > 토요일, 처음X -> 일요일D+토요일D
 						else
-							schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday)
+							schedule = new Schedule(title, contents, dateFormat.format(sunday)
 									, dateFormat.format(saturday), util.calculateTerm(sunday, saturday), Type.SERIAL);
 					}
 					//insert 하고, saturday and sunday 세팅
@@ -94,12 +94,12 @@ public class ScheduleService {
 					if(first) {
 						if(startDate.equals(endDate)) 
 							//end = 토요일, 처음 >> SD+ST+ED+ET
-							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime, endDate+endTime
+							schedule = new Schedule(title, contents, startDate+startTime, endDate+endTime
 									, util.calculateTerm(inputStartDate, inputEndDate), Type.ONEDAY);
 						
 						else 
 							//end < 토요일, 처음 >> SD+ST+ED+ET
-							schedule = new Schedule("test@naver.com", title, contents, startDate+startTime, endDate+endTime
+							schedule = new Schedule(title, contents, startDate+startTime, endDate+endTime
 									, util.calculateTerm(inputStartDate, inputEndDate), Type.SERIAL);
 						
 						scheduleRepository.save(schedule);
@@ -108,7 +108,7 @@ public class ScheduleService {
 					else {
 						//end <= 토요일, 처음X >> 일D+ED+ET
 						sunday = new Date(sundayCalendar.getTimeInMillis());
-						schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday), endDate+endTime
+						schedule = new Schedule(title, contents, dateFormat.format(sunday), endDate+endTime
 								, util.calculateTerm(sunday, inputEndDate), Type.SERIAL);
 						scheduleRepository.save(schedule);
 						break;
@@ -160,14 +160,14 @@ public class ScheduleService {
 					saturday = new Date(saturdayCalendar.getTimeInMillis());
 					
 					if(endTime.equals("<하루 종일>"))
-						schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(start)+startTime
+						schedule = new Schedule(title, contents, dateFormat.format(start)+startTime
 								, dateFormat.format(saturday)+endTime, util.calculateTerm(start, saturday), Type.REPETITION);
 					else
-						schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(start)+startTime
+						schedule = new Schedule(title, contents, dateFormat.format(start)+startTime
 								, dateFormat.format(saturday), util.calculateTerm(start, saturday), Type.REPETITION);
 					scheduleRepository.save(schedule);
 					
-					schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(sunday)
+					schedule = new Schedule(title, contents, dateFormat.format(sunday)
 							, dateFormat.format(end)+endTime, util.calculateTerm(sunday, end), Type.REPETITION);
 					scheduleRepository.save(schedule);
 					
@@ -181,7 +181,7 @@ public class ScheduleService {
 				for(int i=0; i<5; i++) {
 					start = new Date(startCalendar.getTimeInMillis());
 					end = new Date(endCalendar.getTimeInMillis());
-					schedule = new Schedule("test@naver.com", title, contents, dateFormat.format(start)+startTime
+					schedule = new Schedule(title, contents, dateFormat.format(start)+startTime
 							, dateFormat.format(end)+endTime, util.calculateTerm(start, end), Type.REPETITION);
 					scheduleRepository.save(schedule);
 					
@@ -215,7 +215,7 @@ public class ScheduleService {
 			for(int i=0; i<7; i++) {
 				date = new Date(calendar.getTimeInMillis());
 				String scheduleDate = dateFormat.format(date);
-				schedule = new Schedule("test@naver.com", title, contents, scheduleDate+startTime
+				schedule = new Schedule(title, contents, scheduleDate+startTime
 						, scheduleDate+endTime, 1, Type.REPETITION);
 				scheduleRepository.save(schedule);
 				util.jumpOneDay(calendar);
