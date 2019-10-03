@@ -16,7 +16,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 	
 	@Query("select s from Schedule s where type = ?1 and ((substring(s.start_date, 1, 10) between ?2 and "
 			+ "?3) or (?2 between substring(s.start_date, 1, 10) and substring(s.end_date, 1, 10))) order by s.start_date")
-	List<Schedule> findSerialByRangeAndType(Type type, String startRange, String endRange);
+	List<Schedule> findByRangeAndType(Type type, String startRange, String endRange);
 	
 	@Query("select s from Schedule s where s.type = ?1 and (substring(s.start_date, 1, 10) between ?2 and ?3) "
 			+ "order by s.start_date")

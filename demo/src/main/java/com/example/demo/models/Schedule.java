@@ -61,6 +61,7 @@ public class Schedule {
 	
 	public enum Type{
 		SERIAL,
-		ONEDAY
+		ONEDAY,
+		REPETITION
 	}
 }

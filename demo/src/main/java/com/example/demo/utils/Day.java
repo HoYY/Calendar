@@ -16,4 +16,5 @@ public class Day {
 	private int day;
 	private List<ScheduleDto> serialSchedules = new ArrayList<>();
 	private List<ScheduleDto> oneDaySchedules = new ArrayList<>();
+	private List<ScheduleDto> repetitionSchedules = new ArrayList<>();
 }

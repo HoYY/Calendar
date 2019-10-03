@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.DTO.ScheduleDto;
+import com.example.demo.models.Schedule.Type;
 import com.example.demo.services.ScheduleService;
 import com.example.demo.utils.ScheduleUtil;
 import com.example.demo.utils.Util;
@@ -44,14 +45,17 @@ public class ScheduleController {
 		Calendar calendar = Calendar.getInstance();
 		String isDaily = request.getParameter("isDaily");
 		
-		List<ScheduleDto> serialSchedules = scheduleService.getSerialSchedulesByYearMonth(year, month);
+		List<ScheduleDto> serialSchedules = scheduleService.getSchedulesByYearMonthType(year, month, Type.SERIAL);
 		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
-		List<ScheduleDto> serialDailySchedules = scheduleService.getSerialDailySchedulesByYearMonthDate(year, month, date);
-		List<ScheduleDto> oneDayDailySchedules = scheduleService.getOneDayDailySchedulesByYearMonthDate(year, month, date);
+		List<ScheduleDto> repetitionSchedules = scheduleService.getSchedulesByYearMonthType(year, month, Type.REPETITION);
+		List<ScheduleDto> serialDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.SERIAL);
+		List<ScheduleDto> oneDayDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.ONEDAY);
+		List<ScheduleDto> repetitionDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.REPETITION);
 		
-		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules));
+		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules, repetitionSchedules));
 		model.addAttribute("serialDailySchedules", serialDailySchedules);
 		model.addAttribute("oneDayDailySchedules", oneDayDailySchedules);
+		model.addAttribute("repetitionDailySchedules", repetitionDailySchedules);
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("date", date);
@@ -64,7 +68,7 @@ public class ScheduleController {
 		calendar.set(Calendar.DAY_OF_MONTH, date);
 		model.addAttribute("day", calendar.get(Calendar.DAY_OF_WEEK));
 		
-		return "/main/testPage";
+		return "/main/mainPage";
 	}
 	
 	@PostMapping(value="")
@@ -77,6 +81,7 @@ public class ScheduleController {
 		String inputEndTime = request.getParameter("endTime");
 		String dayAll = request.getParameter("dayAll");
 		String isDaily = request.getParameter("isDaily");
+		String repetition = request.getParameter("repetition");
 		String referer = request.getHeader("Referer");
 		
 		if(referer == null) 
@@ -106,14 +111,33 @@ public class ScheduleController {
 				redirectAttr.addFlashAttribute("message", "lateThanEnd");
 				return "redirect:"+splittedReferer[0];
 			}
+			
+			switch(repetition) {
+				case "null":
+					scheduleService.insertSchedule(inputTitle, inputContents, inputStartDate, inputStartTime
+							, inputEndDate, inputEndTime);
+					break;
+					
+				case "everyDay":
+					break;
+					
+				case "everyWeek":
+					if(util.calculateTerm(startDate, endDate) > 7) {
+						redirectAttr.addFlashAttribute("message", "longerThanWeek");
+						return "redirect:"+splittedReferer[0];
+					}
+					scheduleService.insertScheduleEveryWeek(inputTitle, inputContents, inputStartDate, inputStartTime
+							, inputEndDate, inputEndTime);
+					break;
+					
+				case "everyMonth":
+					break;
+			}
 		}
 		catch(Exception e) {
-			log.error("ScheduleController.createSchedule date compare error!!");
+			log.error("ScheduleController.createSchedule date processing and insert schedule error!!");
 			log.error(e);
 		}
-			
-		scheduleService.insertSchedule(inputTitle, inputContents, inputStartDate, inputStartTime
-				, inputEndDate, inputEndTime);
 		
 		return "redirect:"+splittedReferer[0];
 	}

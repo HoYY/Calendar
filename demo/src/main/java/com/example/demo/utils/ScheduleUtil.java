@@ -66,13 +66,16 @@ public class ScheduleUtil {
 		return scheduleDto;
 	}
 	
-	public List<List<Day>> createCalendar(int year, int month, List<ScheduleDto> serialSchedules, List<ScheduleDto> oneDaySchedules) {
+	public List<List<Day>> createCalendar(int year, int month, List<ScheduleDto> serialSchedules, List<ScheduleDto> oneDaySchedules
+			, List<ScheduleDto> repetitionSchedules) {
 		List<Day> week;
 		List<List<Day>> cal = new ArrayList<>();
 		int serialIndex = 0;
 		int oneDayIndex = 0;
+		int repetitionIndex = 0;
 		int serilaLength = serialSchedules.size();
 		int oneDayLength = oneDaySchedules.size();
+		int repetitionLength = repetitionSchedules.size();
 		Calendar tmpCalendar = new GregorianCalendar();
 		
 		Calendar calendar = Calendar.getInstance();
@@ -95,6 +98,7 @@ public class ScheduleUtil {
 				day.setDay(calendar.get(Calendar.DAY_OF_MONTH));
 				serialIndex = addDtoToDay(day, calendar, tmpCalendar, serialSchedules, serialIndex, serilaLength, 1);
 				oneDayIndex = addDtoToDay(day, calendar, tmpCalendar, oneDaySchedules, oneDayIndex, oneDayLength, 2);
+				repetitionIndex = addDtoToDay(day, calendar, tmpCalendar, repetitionSchedules, repetitionIndex, repetitionLength, 3);
 				week.add(day);
 			}
 			cal.add(week);
@@ -109,6 +113,7 @@ public class ScheduleUtil {
 		//date가 같으면 Day객체에 add Dto
 		//kinds = 1 > 연속일정
 		//kinds = 2 > 일반일정
+		//kinds = 3 > 반복일정
 		try {
 			while(index<Length) {
 				ScheduleDto scheduleDto = schedules.get(index);
@@ -118,9 +123,11 @@ public class ScheduleUtil {
 				if(calendar.get(Calendar.DAY_OF_YEAR) == tmpCalendar.get(Calendar.DAY_OF_YEAR)) {
 					if(kinds == 1) 
 						day.getSerialSchedules().add(scheduleDto);	
-					else
+					else if(kinds == 2)
 						day.getOneDaySchedules().add(scheduleDto);
-				
+					else
+						day.getRepetitionSchedules().add(scheduleDto);
+					
 					index++;
 				}
 				//date가 다르면 바로 break;

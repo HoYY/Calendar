@@ -51,24 +51,34 @@ public class Util {
 		return (int) ((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}
 	
-	public void jumpOneWeek(Calendar sundayCalendar, Calendar saturdayCalendar) {
-		if(saturdayCalendar.get(Calendar.WEEK_OF_MONTH) == saturdayCalendar.getMaximum(Calendar.WEEK_OF_MONTH) -1 
-				&& sundayCalendar.get(Calendar.MONTH) == 11) {
-			saturdayCalendar.set(Calendar.YEAR, sundayCalendar.get(Calendar.YEAR) +1);
-			saturdayCalendar.set(Calendar.MONTH, 0);
-			saturdayCalendar.set(Calendar.WEEK_OF_MONTH, 1);
-			sundayCalendar.set(Calendar.YEAR, sundayCalendar.get(Calendar.YEAR) +1);
-			sundayCalendar.set(Calendar.MONTH, 0);
+	public void jumpOneWeek(Calendar calendar) {
+		int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH);
+		int maxWeekOfMonth = calendar.getMaximum(Calendar.WEEK_OF_MONTH) - 1;
+		int maxDayOfYear = calendar.getMaximum(Calendar.DAY_OF_YEAR);
+		int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+		int lastDayOfMonth = calendar.getMaximum(Calendar.DAY_OF_MONTH);
+		int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+		if(weekOfMonth == maxWeekOfMonth && maxDayOfYear - dayOfYear < 6) {
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.WEEK_OF_MONTH, 2);
 		}
-		else if(saturdayCalendar.get(Calendar.WEEK_OF_MONTH) == saturdayCalendar.getMaximum(Calendar.WEEK_OF_MONTH) -1) {
-			saturdayCalendar.set(Calendar.MONTH, sundayCalendar.get(Calendar.MONTH) +1);
-			saturdayCalendar.set(Calendar.WEEK_OF_MONTH, 1);
-			sundayCalendar.set(Calendar.MONTH, sundayCalendar.get(Calendar.MONTH) +1);
-			sundayCalendar.set(Calendar.WEEK_OF_MONTH, 1);
+		else if(maxDayOfYear - dayOfYear <= 6) {
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.WEEK_OF_MONTH, 1);
+		}
+		else if(weekOfMonth == maxWeekOfMonth && lastDayOfMonth - dayOfMonth < 6) {
+			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+			calendar.set(Calendar.WEEK_OF_MONTH, 2);
+		}
+		else if(lastDayOfMonth - dayOfMonth <= 6) {
+			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+			calendar.set(Calendar.WEEK_OF_MONTH, 1);
 		}
 		else {
-			saturdayCalendar.set(Calendar.WEEK_OF_MONTH, saturdayCalendar.get(Calendar.WEEK_OF_MONTH) +1);
-			sundayCalendar.set(Calendar.WEEK_OF_MONTH, sundayCalendar.get(Calendar.WEEK_OF_MONTH) +1);
+			calendar.set(Calendar.WEEK_OF_MONTH, weekOfMonth + 1);
 		}
 	}
 }
