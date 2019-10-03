@@ -195,6 +195,37 @@ public class ScheduleService {
 		}
 	}
 	
+	public void insertScheduleEveryDay(String title, String contents, String startDate, String startTime
+			, String endDate, String endTime) {
+		if(util.isEmpty(startTime)) {
+			startTime = "";
+			endTime = "<하루 종일>";
+		}
+		
+		try {
+			Date inputStartDate = dateFormat.parse(startDate);
+			Date inputEndDate = dateFormat.parse(endDate);
+			
+			Calendar calendar = new GregorianCalendar();
+			
+			calendar.setTime(inputStartDate);
+			Schedule schedule;
+			Date date;
+						
+			for(int i=0; i<7; i++) {
+				date = new Date(calendar.getTimeInMillis());
+				String scheduleDate = dateFormat.format(date);
+				schedule = new Schedule("test@naver.com", title, contents, scheduleDate+startTime
+						, scheduleDate+endTime, 1, Type.REPETITION);
+				scheduleRepository.save(schedule);
+				util.jumpOneDay(calendar);
+			}
+		}
+		catch(Exception e) {
+			
+		}
+	}
+	
 	public List<ScheduleDto> getSchedulesByYearMonthType(int year, int month, Type type) {
 		return scheduleUtil.toDtoList(scheduleRepository.findByRangeAndType(type, 
 				util.getStartDateOfMonth(year, month), util.getEndDateOfMonth(year, month)));

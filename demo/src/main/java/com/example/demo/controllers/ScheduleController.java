@@ -119,6 +119,12 @@ public class ScheduleController {
 					break;
 					
 				case "everyDay":
+					if(!startDate.equals(endDate)) {
+						redirectAttr.addFlashAttribute("message", "notSameDate");
+						return "redirect:"+splittedReferer[0];
+					}
+					scheduleService.insertScheduleEveryDay(inputTitle, inputContents, inputStartDate, inputStartTime
+							, inputEndDate, inputEndTime);
 					break;
 					
 				case "everyWeek":

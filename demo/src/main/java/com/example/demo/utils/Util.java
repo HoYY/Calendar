@@ -81,4 +81,18 @@ public class Util {
 			calendar.set(Calendar.WEEK_OF_MONTH, weekOfMonth + 1);
 		}
 	}
+	
+	public void jumpOneDay(Calendar calendar) {
+		int maxDayOfYear = calendar.getMaximum(Calendar.DAY_OF_YEAR);
+		int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+
+		if(dayOfYear == maxDayOfYear) {
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.DAY_OF_YEAR, 1);
+		}
+		else {
+			calendar.set(Calendar.DAY_OF_YEAR, dayOfYear + 1);
+		}
+	}
 }
