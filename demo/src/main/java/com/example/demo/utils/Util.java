@@ -64,7 +64,6 @@ public class Util {
 		int dayOfNextMonth = calendar.get(Calendar.DAY_OF_MONTH);
 		if(isMax) {
 			calendar.set(Calendar.DAY_OF_MONTH, maxDayOfNextMonth);
-			System.out.println(maxDayOfNextMonth);
 		}
 		else if(original > dayOfNextMonth && maxDayOfNextMonth != dayOfNextMonth) {
 			calendar.set(Calendar.DAY_OF_MONTH, original);

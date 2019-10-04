@@ -38,6 +38,7 @@ public class ScheduleDto {
 	private int term;
 	private String data_content;
 	private Type type;
+	private String repetitionType;
 	
 	public Schedule toEntity() {
 		return new Schedule(title, contents, startDate+startTime, endDate+endTime, term, type);

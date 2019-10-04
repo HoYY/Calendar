@@ -26,24 +26,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.models.Schedule.Type;
-import com.example.demo.services.ScheduleService;
+import com.example.demo.services.OneDayScheduleServiceImpl;
+import com.example.demo.services.RepeatedScheduleServiceImpl;
+import com.example.demo.services.SerialScheduleServiceImpl;
 import com.example.demo.utils.ScheduleUtil;
 import com.example.demo.utils.Util;
 
 @Controller
 @RequestMapping(value="/schedules")
 public class ScheduleController {
-	@Autowired
-	private Util util;
+	private static final Logger log = LogManager.getLogger(ScheduleController.class);
 	
 	@Autowired
-	private ScheduleService scheduleService;
+	private SerialScheduleServiceImpl  serialScheduleServiceImpl;
+	
+	@Autowired
+	private OneDayScheduleServiceImpl oneDayScheduleServiceImpl;
+	
+	@Autowired
+	private RepeatedScheduleServiceImpl repeatedScheduleServiceImpl;
 	
 	@Autowired
 	private ScheduleUtil scheduleUtil;
 	
-	private static final Logger log = LogManager.getLogger(ScheduleController.class);
-	
+	@Autowired
+	private Util util;
 	
 	@GetMapping(value="")
 	public String getToday() {
@@ -62,12 +69,12 @@ public class ScheduleController {
 			, ScheduleDto scheduleDto) {
 		Calendar calendar = Calendar.getInstance();
 
-		List<ScheduleDto> serialSchedules = scheduleService.getSchedulesByYearMonthType(year, month, Type.SERIAL);
-		List<ScheduleDto> oneDaySchedules = scheduleService.getOneDaySchedulesByYearMonth(year, month);
-		List<ScheduleDto> repetitionSchedules = scheduleService.getSchedulesByYearMonthType(year, month, Type.REPETITION);
-		List<ScheduleDto> serialDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.SERIAL);
-		List<ScheduleDto> oneDayDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.ONEDAY);
-		List<ScheduleDto> repetitionDailySchedules = scheduleService.getDailySchedulesByYearMonthDateType(year, month, date, Type.REPETITION);
+		List<ScheduleDto> serialSchedules = serialScheduleServiceImpl.getSchedulesByYearMonth(year, month);
+		List<ScheduleDto> oneDaySchedules = oneDayScheduleServiceImpl.getSchedulesByYearMonth(year, month);
+		List<ScheduleDto> repetitionSchedules = repeatedScheduleServiceImpl.getSchedulesByYearMonth(year, month);
+		List<ScheduleDto> serialDailySchedules = serialScheduleServiceImpl.getDailySchedulesByYearMonthDate(year, month, date);
+		List<ScheduleDto> oneDayDailySchedules = oneDayScheduleServiceImpl.getDailySchedulesByYearMonthDate(year, month, date);
+		List<ScheduleDto> repetitionDailySchedules = repeatedScheduleServiceImpl.getDailySchedulesByYearMonthDate(year, month, date);
 		
 		model.addAttribute("calendar", scheduleUtil.createCalendar(year, month, serialSchedules, oneDaySchedules, repetitionSchedules));
 		model.addAttribute("serialDailySchedules", serialDailySchedules);
@@ -106,7 +113,6 @@ public class ScheduleController {
 		redirectAttr.addFlashAttribute("isDaily", isDaily);
 		
 		if(bindingResult.hasErrors()) {
-			System.out.println(bindingResult);
 			FieldError fieldError = new FieldError("scheduleDto", "title", "입력 칸을 모두 입력해 주셔야 합니다.");
 			redirectAttr.addFlashAttribute("fieldError", fieldError);
 			return "redirect:"+splittedReferer[0];
@@ -132,7 +138,10 @@ public class ScheduleController {
 			
 			switch(repetition) {
 				case "null":
-					scheduleService.insertSchedule(scheduleDto);
+					if(startDate.equals(endDate)) 
+						oneDayScheduleServiceImpl.insertSchedule(scheduleDto);
+					else
+						serialScheduleServiceImpl.insertSchedule(scheduleDto);
 					break;
 					
 				case "everyDay":
@@ -141,7 +150,8 @@ public class ScheduleController {
 						redirectAttr.addFlashAttribute("fieldError", fieldError);
 						return "redirect:"+splittedReferer[0];
 					}
-					scheduleService.insertScheduleEveryDay(scheduleDto);
+					scheduleDto.setRepetitionType(repetition);
+					repeatedScheduleServiceImpl.insertSchedule(scheduleDto);
 					break;
 					
 				case "everyWeek":
@@ -150,7 +160,8 @@ public class ScheduleController {
 						redirectAttr.addFlashAttribute("fieldError", fieldError);
 						return "redirect:"+splittedReferer[0];
 					}
-					scheduleService.insertScheduleEveryWeek(scheduleDto);
+					scheduleDto.setRepetitionType(repetition);
+					repeatedScheduleServiceImpl.insertSchedule(scheduleDto);
 					break;
 					
 				case "everyMonth":
@@ -159,7 +170,8 @@ public class ScheduleController {
 						redirectAttr.addFlashAttribute("fieldError", fieldError);
 						return "redirect:"+splittedReferer[0];
 					}
-					scheduleService.insertScheduleEveryMonth(scheduleDto);
+					scheduleDto.setRepetitionType(repetition);
+					repeatedScheduleServiceImpl.insertSchedule(scheduleDto);
 					break;
 			}
 		}
@@ -167,13 +179,12 @@ public class ScheduleController {
 			log.error("ScheduleController.createSchedule date processing and insert schedule error!!");
 			log.error(e);
 		}
-		
 		return "redirect:"+splittedReferer[0];
 	}
 	
 	@DeleteMapping(value="/{id}")
 	public String deleteSchedule(@PathVariable int id, HttpServletRequest request, RedirectAttributes redirectAttr) {
-		scheduleService.deleteById(id);
+		oneDayScheduleServiceImpl.deleteById(id);
 		String referer = request.getHeader("Referer");
 		String isDaily = request.getParameter("isDaily");
 		
