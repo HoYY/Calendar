@@ -90,7 +90,7 @@ public class RepeatedScheduleServiceImpl implements ScheduleService {
 					startCalendar.setTime(inputStartDate);
 					endCalendar.setTime(inputEndDate);
 					
-					if(startCalendar.get(Calendar.WEEK_OF_MONTH) != endCalendar.get(Calendar.WEEK_OF_MONTH)) {
+					if(startCalendar.get(Calendar.DAY_OF_WEEK) - endCalendar.get(Calendar.DAY_OF_WEEK) > 0) {
 						sundayCalendar.setTime(inputEndDate);
 						saturdayCalendar.setTime(inputStartDate);
 						sundayCalendar.set(Calendar.DAY_OF_WEEK, 1);
