@@ -13,5 +13,6 @@ public interface ScheduleService {
 	public List<ScheduleDto> getDailySchedulesByYearMonthDate(int year, int month, int date);
 
 	public void deleteById(int id);
-
+	
+	public boolean existsByTitleAndContents(ScheduleDto scheduleDto);
 }

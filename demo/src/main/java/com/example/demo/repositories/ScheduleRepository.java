@@ -29,4 +29,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 	@Modifying
 	@Query("delete from Schedule s where s.title = ?1 and s.contents = ?2 and s.type = ?3")
 	void deleteByTitleAndContentsAndType(String title, String contents, Type type);
+	
+	@Query("select count(1) > 0 from Schedule s where s.type = ?1 and s.title = ?2 and s.contents = ?3")
+	boolean existsByTypeAndTitleAndContents(Type type, String title, String contents);
 }

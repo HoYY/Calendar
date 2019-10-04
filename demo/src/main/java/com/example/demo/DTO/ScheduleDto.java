@@ -40,6 +40,17 @@ public class ScheduleDto {
 	private Type type;
 	private String repetitionType;
 	
+	public ScheduleDto() {}
+	public ScheduleDto(String title, String contents, String start_date
+			, String end_date, int term, Type type) {
+		this.title = title;
+		this.contents = contents;
+		this.startDate = start_date;
+		this.endDate = end_date;
+		this.term = term;
+		this.type = type;
+	}
+	
 	public Schedule toEntity() {
 		return new Schedule(title, contents, startDate+startTime, endDate+endTime, term, type);
 	}

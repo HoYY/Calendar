@@ -146,5 +146,8 @@ public class SerialScheduleServiceImpl implements ScheduleService {
 			log.error(e);
 		}
 	}
-
+	
+	public boolean existsByTitleAndContents(ScheduleDto scheduleDto) {
+		return scheduleRepository.existsByTypeAndTitleAndContents(Type.SERIAL, scheduleDto.getTitle(), scheduleDto.getContents());
+	}
 }
