@@ -42,6 +42,8 @@ public class Schedule {
 	@Enumerated(EnumType.STRING)
 	private Type type;
 	
+	private String accept;
+	
 	
 	public Schedule() {}
 	public Schedule(String title, String contents, String start_date
@@ -52,6 +54,7 @@ public class Schedule {
 		this.end_date = end_date;
 		this.term = term;
 		this.type = type;
+		this.accept = "";
 	}
 	
 	public enum Type{

@@ -68,6 +68,14 @@ public class RepeatedScheduleServiceImpl implements ScheduleService {
 					}
 					log.info("Insert Repetition Schedule Case : everyDay Success");
 				}
+				catch(IllegalArgumentException e) {
+					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyDay IllegalArgumentException error!!");
+					log.error(e);
+				}
+				catch(NullPointerException ne) {
+					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyDay NullPointerException error!!");
+					log.error(ne);
+				}
 				catch(Exception e) {
 					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyDay error!!");
 					log.error(e);
@@ -137,6 +145,14 @@ public class RepeatedScheduleServiceImpl implements ScheduleService {
 					}
 					log.info("Insert Repetition Schedule Case : everyWeek Success");
 				}
+				catch(IllegalArgumentException e) {
+					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyWeek IllegalArgumentException error!!");
+					log.error(e);
+				}
+				catch(NullPointerException ne) {
+					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyWeek NullPointerException error!!");
+					log.error(ne);
+				}
 				catch(Exception e) {
 					log.error("RepeatedScheduleServiceImpl.insertSchedule case : everyWeek error!!");
 					log.error(e);
@@ -192,6 +208,14 @@ public class RepeatedScheduleServiceImpl implements ScheduleService {
 			Schedule schedule = scheduleRepository.findById(id);
 			scheduleRepository.deleteByTitleAndContentsAndType(schedule.getTitle(), schedule.getContents(), schedule.getType());
 			log.info("Delete Schedule Success. Title : "+ schedule.getTitle());
+		}
+		catch(IllegalArgumentException e) {
+			log.error("RepeatedScheduleServiceImpl.deleteById IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("RepeatedScheduleServiceImpl.deleteById NullPointerException error!!");
+			log.error(ne);
 		}
 		catch(Exception e) {
 			log.error("RepeatedScheduleServiceImpl.deleteById error!!");

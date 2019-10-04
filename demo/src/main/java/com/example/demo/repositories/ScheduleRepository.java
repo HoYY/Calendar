@@ -32,4 +32,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 	
 	@Query("select count(1) > 0 from Schedule s where s.type = ?1 and s.title = ?2 and s.contents = ?3")
 	boolean existsByTypeAndTitleAndContents(Type type, String title, String contents);
+	
+	@Transactional
+	@Modifying
+	@Query("update Schedule s set s.accept = 'Accept!!' where s.title = ?1")
+	void updateByTitle(String title);
 }

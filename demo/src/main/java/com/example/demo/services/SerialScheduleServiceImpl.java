@@ -119,6 +119,14 @@ public class SerialScheduleServiceImpl implements ScheduleService {
 			}
 			log.info("Insert "+type+" Schedule Success");
 		}
+		catch(IllegalArgumentException e) {
+			log.error("SerialScheduleServiceImpl.insertSchedule IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("SerialScheduleServiceImpl.insertSchedule NullPointerException error!!");
+			log.error(ne);
+		}
 		catch(Exception e) {
 			log.error("SerialScheduleServiceImpl.insertSchedule error!!");
 			log.error(e);
@@ -140,6 +148,14 @@ public class SerialScheduleServiceImpl implements ScheduleService {
 			Schedule schedule = scheduleRepository.findById(id);
 			scheduleRepository.deleteByTitleAndContentsAndType(schedule.getTitle(), schedule.getContents(), schedule.getType());
 			log.info("Delete Schedule Success. Title : "+ schedule.getTitle());
+		}
+		catch(IllegalArgumentException e) {
+			log.error("SerialScheduleServiceImpl.deleteById IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("SerialScheduleServiceImpl.deleteById NullPointerException error!!");
+			log.error(ne);
 		}
 		catch(Exception e) {
 			log.error("SerialScheduleServiceImpl.deleteById error!!");

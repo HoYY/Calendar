@@ -44,6 +44,14 @@ public class OneDayScheduleServiceImpl implements ScheduleService {
 			
 			log.info("Insert OneDay Schedule Success");
 		}
+		catch(IllegalArgumentException e) {
+			log.error("OneDayScheduleServiceImpl.insertSchedule IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("OneDayScheduleServiceImpl.insertSchedule NullPointerException error!!");
+			log.error(ne);
+		}
 		catch(Exception e) {
 			log.error("OneDayScheduleServiceImpl.insertSchedule error!!");
 			log.error(e);
@@ -66,6 +74,14 @@ public class OneDayScheduleServiceImpl implements ScheduleService {
 			scheduleRepository.deleteByTitleAndContentsAndType(schedule.getTitle(), schedule.getContents(), schedule.getType());
 			log.info("Delete Schedule Success. Title : "+ schedule.getTitle());
 		}
+		catch(IllegalArgumentException e) {
+			log.error("OneDayScheduleServiceImpl.deleteById IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("OneDayScheduleServiceImpl.deleteById NullPointerException error!!");
+			log.error(ne);
+		}
 		catch(Exception e) {
 			log.error("OneDayScheduleServiceImpl.deleteById error!!");
 			log.error(e);
@@ -74,5 +90,23 @@ public class OneDayScheduleServiceImpl implements ScheduleService {
 	
 	public boolean existsByTitleAndContents(ScheduleDto scheduleDto) {
 		return scheduleRepository.existsByTypeAndTitleAndContents(Type.ONEDAY, scheduleDto.getTitle(), scheduleDto.getContents());
+	}
+	
+	public void acceptScheduleByTitle(String scheduleTitle) {
+		try {
+			scheduleRepository.updateByTitle(scheduleTitle);
+		}
+		catch(IllegalArgumentException e) {
+			log.error("OneDayScheduleServiceImpl.acceptScheduleByTitle IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("OneDayScheduleServiceImpl.acceptScheduleByTitle NullPointerException error!!");
+			log.error(ne);
+		}
+		catch(Exception e) {
+			log.error("OneDayScheduleServiceImpl.acceptScheduleByTitle error!!");
+			log.error(e);
+		}
 	}
 }

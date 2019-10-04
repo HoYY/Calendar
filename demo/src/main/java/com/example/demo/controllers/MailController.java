@@ -7,11 +7,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.services.MailServiceImpl;
+import com.example.demo.services.OneDayScheduleServiceImpl;
 import com.example.demo.utils.Util;
 
 @Controller
@@ -23,12 +26,16 @@ public class MailController {
 	private MailServiceImpl mailServiceImpl;
 	
 	@Autowired
+	private OneDayScheduleServiceImpl oneDayScheduleServiceImpl;
+	
+	@Autowired
 	private Util util;
 	
 	@PostMapping("")
 	public String sendMail(HttpServletRequest request, RedirectAttributes redirectAttr) {
 		String target = request.getParameter("target");
 		String isDaily = request.getParameter("isDaily");
+		String scheduleTitle = request.getParameter("scheduleTitle");
 		String referer = request.getHeader("Referer");
 		
 		if(referer == null) 
@@ -43,7 +50,7 @@ public class MailController {
 		}
 		
 		try {
-			mailServiceImpl.sendMessage(target);
+			mailServiceImpl.sendMessage(target, scheduleTitle);
 		}
 		catch(Exception e) {
 			log.error("MailController.sendMail error!!");
@@ -51,5 +58,11 @@ public class MailController {
 		}
 		
 		return "redirect:"+splittedReferer[0];
+	}
+	
+	@GetMapping(value="/{scheduleTitle}")
+	public String acceptSchedule(@PathVariable String scheduleTitle) {
+		oneDayScheduleServiceImpl.acceptScheduleByTitle(scheduleTitle);
+		return "redirect:/";
 	}
 }

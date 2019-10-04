@@ -174,6 +174,14 @@ public class ScheduleController {
 					break;
 			}
 		}
+		catch(IllegalArgumentException e) {
+			log.error("ScheduleController.createSchedule IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("ScheduleController.createSchedule NullPointerException error!!");
+			log.error(ne);
+		}
 		catch(Exception e) {
 			log.error("ScheduleController.createSchedule date processing and insert schedule error!!");
 			log.error(e);

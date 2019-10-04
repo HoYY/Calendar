@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
-
+/*
+ * Dto 객체를 다루지 않는 util 메소드들이 모여 있는 클래스입니다.
+ */
 @Component
 public class Util {
 	final String emptyString = new String("");

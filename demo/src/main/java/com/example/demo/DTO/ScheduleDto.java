@@ -39,6 +39,7 @@ public class ScheduleDto {
 	private String data_content;
 	private Type type;
 	private String repetitionType;
+	private String accept;
 	
 	public ScheduleDto() {}
 	public ScheduleDto(String title, String contents, String start_date

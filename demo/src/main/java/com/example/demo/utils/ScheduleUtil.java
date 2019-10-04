@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.models.Schedule;
-
+/*
+ * VO 객체를 DTO 객체로 바꾸거나 DTO를 사용하여 Calendar를 만드는 등 DTO 객체를 다루는 util 메소드들이 모여있는 클래스입니다.
+ */
 @Component
 public class ScheduleUtil {
 	private static final Logger log = LogManager.getLogger(ScheduleUtil.class);
@@ -53,15 +55,15 @@ public class ScheduleUtil {
 		scheduleDto.setTerm(schedule.getTerm());
 
 		String data_content = "<div class='content-line'><div class='event-consecutive-marking'>"
-				+ "</div><div class='title'><h5>"+ title +"</h5>"
+				+ "</div><div class='title'><h5>"+ title +" "+ schedule.getAccept() +"</h5>"
 				+ "<h7 class='reservation'>"+ startDate +" "+ startTime +"<br/>"
 				+ "~ "+ endDate +" "+ endTime +"</div></div>"
 				+ "<div class='content-line'><i class='material-icons'>notes</i><div class='title'>"
-				+ "<h7 class='reservation'>"+ contents +"</h7><form action='/email' method='post'><div class='input-group'><div class='input-group-prepend'>"
+				+ "<h7 class='reservation'>"+ contents +"</h7><form action='/email' method='post'><div class='input-group mt-3'><div class='input-group-prepend'>"
 						+ "<div class='input-group-text' id='btnGroupAddon'>@</div></div>"
 						+ "<input type='text' class='form-control' name='target' placeholder='Input Invitation Mail' aria-label='Input Invitation Mail' "
-						+ "aria-describedby='btnGroupAddon'></div></form>"
-						+ "<div><button type='button' class='btn btn-danger btn-sm mt-2' "
+						+ "aria-describedby='btnGroupAddon'><input type='hidden' name='scheduleTitle' value='"+title+"'></div></form>"
+						+ "<div><button type='button' class='btn btn-danger btn-sm mt-1' "
 						+ "data-toggle='modal' data-target='#scheduleDeleteModal' onclick='setDeleteId("+schedule.getId()+");'>일정 취소</button></div></div>";
 
 		scheduleDto.setData_content(data_content);
@@ -138,10 +140,19 @@ public class ScheduleUtil {
 					break;
 			}
 		}
+		catch(IllegalArgumentException e) {
+			log.error("ScheduleUtil.addDtoToDay IllegalArgumentException error!!");
+			log.error(e);
+		}
+		catch(NullPointerException ne) {
+			log.error("ScheduleUtil.addDtoToDay NullPointerException error!!");
+			log.error(ne);
+		}
 		catch(Exception e) {
 			log.error("ScheduleUtil.addDtoToDay error!!");
 			log.error(e);
 		}
+		
 		
 		return index;
 	}
