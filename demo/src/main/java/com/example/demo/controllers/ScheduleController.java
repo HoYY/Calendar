@@ -137,30 +137,13 @@ public class ScheduleController {
 			
 			switch(repetition) {
 				case "null":
-					if(startDate.equals(endDate)) {
-						if(oneDayScheduleServiceImpl.existsByTitleAndContents(scheduleDto)) {
-							FieldError fieldError = new FieldError("scheduleDto", "startDate", "이미 존재하는 일정입니다.");
-							redirectAttr.addFlashAttribute("fieldError", fieldError);
-							return "redirect:"+splittedReferer[0];
-						}
+					if(startDate.equals(endDate)) 
 						oneDayScheduleServiceImpl.insertSchedule(scheduleDto);
-					}
-					else {
-						if(serialScheduleServiceImpl.existsByTitleAndContents(scheduleDto)) {
-							FieldError fieldError = new FieldError("scheduleDto", "startDate", "이미 존재하는 일정입니다.");
-							redirectAttr.addFlashAttribute("fieldError", fieldError);
-							return "redirect:"+splittedReferer[0];
-						}
+					else 
 						serialScheduleServiceImpl.insertSchedule(scheduleDto);
-					}
 					break;
 					
 				case "everyDay":
-					if(repeatedScheduleServiceImpl.existsByTitleAndContents(scheduleDto)) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "이미 존재하는 일정입니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
-						return "redirect:"+splittedReferer[0];
-					}
 					if(!startDate.equals(endDate)) {
 						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매일 반복 일정은 시작 날짜와 종료 날짜가 같아야 합니다.");
 						redirectAttr.addFlashAttribute("fieldError", fieldError);
@@ -171,11 +154,6 @@ public class ScheduleController {
 					break;
 					
 				case "everyWeek":
-					if(repeatedScheduleServiceImpl.existsByTitleAndContents(scheduleDto)) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "이미 존재하는 일정입니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
-						return "redirect:"+splittedReferer[0];
-					}
 					if(util.calculateTerm(startDate, endDate) > 7) {
 						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매주 반복 일정은 7일을 넘길 수 없습니다.");
 						redirectAttr.addFlashAttribute("fieldError", fieldError);
@@ -186,11 +164,6 @@ public class ScheduleController {
 					break;
 					
 				case "everyMonth":
-					if(repeatedScheduleServiceImpl.existsByTitleAndContents(scheduleDto)) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "이미 존재하는 일정입니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
-						return "redirect:"+splittedReferer[0];
-					}
 					if(!scheduleDto.getStartDate().substring(5,7).equals(scheduleDto.getEndDate().substring(5,7))) {
 						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매월 반복 일정의 경우 시작 날짜와 종료 날짜는 같은 달이어야 합니다.");
 						redirectAttr.addFlashAttribute("fieldError", fieldError);

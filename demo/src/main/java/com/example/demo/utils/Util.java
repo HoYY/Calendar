@@ -3,6 +3,7 @@ package com.example.demo.utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
@@ -96,4 +97,11 @@ public class Util {
 			calendar.set(Calendar.DAY_OF_YEAR, dayOfYear + 1);
 		}
 	}
+	
+	public boolean isEmail(String email) {
+        if(email == null)
+        	return false;
+        
+        return Pattern.matches("[\\w\\~\\-\\.]+@[\\w\\~\\-]+(\\.[\\w\\~\\-]+)+", email.trim());
+    }
 }
