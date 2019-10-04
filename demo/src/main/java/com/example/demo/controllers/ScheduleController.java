@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -112,15 +111,13 @@ public class ScheduleController {
 		redirectAttr.addFlashAttribute("isDaily", isDaily);
 		
 		if(bindingResult.hasErrors()) {
-			FieldError fieldError = new FieldError("scheduleDto", "title", "입력 칸을 모두 입력해 주셔야 합니다.");
-			redirectAttr.addFlashAttribute("fieldError", fieldError);
+			redirectAttr.addFlashAttribute("message", "empty");
 			return "redirect:"+splittedReferer[0];
 		}
 		
 		if(!dayAll.equals("true")) {
 			if(util.isEmpty(scheduleDto.getStartTime()) || util.isEmpty(scheduleDto.getEndTime())) {
-				FieldError fieldError = new FieldError("scheduleDto", "startTime", "입력 칸을 모두 입력해 주셔야 합니다.");
-				redirectAttr.addFlashAttribute("fieldError", fieldError);
+				redirectAttr.addFlashAttribute("message", "dayAllFail");
 				return "redirect:"+splittedReferer[0];
 			}
 		}
@@ -130,8 +127,7 @@ public class ScheduleController {
 			Date startDate = dateFormat.parse(scheduleDto.getStartDate());
 			Date endDate = dateFormat.parse(scheduleDto.getEndDate());
 			if(startDate.getTime() > endDate.getTime()) {
-				FieldError fieldError = new FieldError("scheduleDto", "startDate", "일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
-				redirectAttr.addFlashAttribute("fieldError", fieldError);
+				redirectAttr.addFlashAttribute("message", "dateFail");
 				return "redirect:"+splittedReferer[0];
 			}
 			
@@ -145,8 +141,7 @@ public class ScheduleController {
 					
 				case "everyDay":
 					if(!startDate.equals(endDate)) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매일 반복 일정은 시작 날짜와 종료 날짜가 같아야 합니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
+						redirectAttr.addFlashAttribute("message", "everyDayFail");
 						return "redirect:"+splittedReferer[0];
 					}
 					scheduleDto.setRepetitionType(repetition);
@@ -155,8 +150,7 @@ public class ScheduleController {
 					
 				case "everyWeek":
 					if(util.calculateTerm(startDate, endDate) > 7) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매주 반복 일정은 7일을 넘길 수 없습니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
+						redirectAttr.addFlashAttribute("message", "everyWeekFail");
 						return "redirect:"+splittedReferer[0];
 					}
 					scheduleDto.setRepetitionType(repetition);
@@ -165,8 +159,7 @@ public class ScheduleController {
 					
 				case "everyMonth":
 					if(!scheduleDto.getStartDate().substring(5,7).equals(scheduleDto.getEndDate().substring(5,7))) {
-						FieldError fieldError = new FieldError("scheduleDto", "startDate", "매월 반복 일정의 경우 시작 날짜와 종료 날짜는 같은 달이어야 합니다.");
-						redirectAttr.addFlashAttribute("fieldError", fieldError);
+						redirectAttr.addFlashAttribute("message", "everyMonthFail");
 						return "redirect:"+splittedReferer[0];
 					}
 					scheduleDto.setRepetitionType(repetition);

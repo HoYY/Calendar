@@ -347,7 +347,28 @@
 			document.body.appendChild(form);
 			form.submit();
 		}
-	/*]]>*/	
+		
+		switch(message) {
+			case "empty":
+				alert("입력 칸을 모두 입력해 주셔야 합니다.");
+				break;
+			case "dayAllFail":
+				alert("입력 칸을 모두 입력해 주셔야 합니다.");
+				break;
+			case "dateFail":
+				alert("일정 시작 날짜는 일정 종료 날짜보다 이전이어야 합니다.");
+				break;
+			case "everyDayFail":
+				alert("매일 반복 일정은 시작 날짜와 종료 날짜가 같아야 합니다.");
+				break;
+			case "everyWeekFail":
+				alert("매주 반복 일정은 7일을 넘길 수 없습니다.");
+				break;
+			case "everyMonthFail":
+				alert("매월 반복 일정의 경우 시작 날짜와 종료 날짜는 같은 달이어야 합니다.");
+				break;
+		}
+	/*]]>*/
 	</script>
 </body>
 </html>
