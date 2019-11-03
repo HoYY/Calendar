@@ -2,7 +2,7 @@ package com.example.demo.services;
 
 import java.util.List;
 
-import com.example.demo.DTO.ScheduleDto;
+import com.example.demo.dto.ScheduleDto;
 
 public interface ScheduleService {
 
