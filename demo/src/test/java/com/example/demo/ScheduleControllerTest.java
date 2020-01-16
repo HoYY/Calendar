@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.controllers.ScheduleController;
+import com.example.demo.dto.ScheduleDto;
 import com.example.demo.models.Schedule.Type;
 import com.example.demo.services.OneDayScheduleServiceImpl;
 import com.example.demo.services.RepeatedScheduleServiceImpl;

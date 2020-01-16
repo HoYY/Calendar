@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.DTO.ScheduleDto;
+import com.example.demo.dto.ScheduleDto;
 import com.example.demo.models.Schedule;
 /*
  * VO 객체를 DTO 객체로 바꾸거나 DTO를 사용하여 Calendar를 만드는 등 DTO 객체를 다루는 util 메소드들이 모여있는 클래스입니다.

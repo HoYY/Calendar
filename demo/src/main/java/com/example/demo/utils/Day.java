@@ -3,7 +3,7 @@ package com.example.demo.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.demo.DTO.ScheduleDto;
+import com.example.demo.dto.ScheduleDto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.DTO.ScheduleDto;
+import com.example.demo.dto.ScheduleDto;
 import com.example.demo.services.OneDayScheduleServiceImpl;
 import com.example.demo.services.RepeatedScheduleServiceImpl;
 import com.example.demo.services.SerialScheduleServiceImpl;

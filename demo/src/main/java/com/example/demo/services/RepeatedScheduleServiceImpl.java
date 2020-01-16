@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.DTO.ScheduleDto;
 import com.example.demo.controllers.ScheduleController;
+import com.example.demo.dto.ScheduleDto;
 import com.example.demo.models.Schedule;
 import com.example.demo.models.Schedule.Type;
 import com.example.demo.repositories.ScheduleRepository;
